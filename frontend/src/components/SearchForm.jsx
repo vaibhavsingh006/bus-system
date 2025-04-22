@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Calendar, MapPin } from "lucide-react";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const SearchForm = () => {
     const navigate = useNavigate();
@@ -19,7 +20,7 @@ const SearchForm = () => {
     useEffect(() => {
         const fetchRoutes = async () => {
             try {
-                const response = await fetch("http://localhost:3000/search/buses");
+                const response = await fetch(`${API_URL}/search/buses`);
                 const data = await response.json();
                 setRoutes(data);
 

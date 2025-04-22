@@ -26,7 +26,7 @@ app.use(cookieParser());
 
 const allowedOrigins = [
     'http://localhost:5173', // Local frontend
-    'https://bus-system-seven.vercel.app/', // Deployed frontend on Vercel
+    'https://bus-system-1.onrender.com/', // Deployed frontend on Vercel
 ];
 
 // Configure CORS middleware

@@ -56,7 +56,7 @@ router.post("/verify-otp", async (req, res) => {
 
     const user = await User.findOne({ email });
     const validOTP = otpMap.get(email);
-
+    console.log({ validOTP, otp, email });
     if (validOTP === otp) {
         otpMap.delete(email);
 

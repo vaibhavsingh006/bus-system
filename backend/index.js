@@ -30,20 +30,28 @@ const allowedOrigins = [
 ];
 
 // Configure CORS middleware
-app.use(
-    cors({
-        origin: (origin, callback) => {
-            if (!origin || allowedOrigins.includes(origin)) {
-                callback(null, true); // Allow request
-            } else {
-                callback(new Error('Not allowed by CORS')); // Block request
-            }
-        },
-        credentials: true, // Allow cookies
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],
-        allowedHeaders: ['Content-Type', 'Authorization'],
-    })
-);
+// app.use(
+//     cors({
+//         origin: (origin, callback) => {
+//             if (!origin || allowedOrigins.includes(origin)) {
+//                 callback(null, true); // Allow request
+//             } else {
+//                 callback(new Error('Not allowed by CORS')); // Block request
+//             }
+//         },
+//         credentials: true, // Allow cookies
+//         methods: ['GET', 'POST', 'PUT', 'DELETE'],
+//         allowedHeaders: ['Content-Type', 'Authorization'],
+//     })
+// );
+
+app.use(cors({
+    origin: allowedOrigins,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
 
 // Connect to MongoDB
 const PORT = process.env.PORT || 3000;

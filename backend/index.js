@@ -13,7 +13,10 @@ const cookieParser = require('cookie-parser');
 const ownerLoginCheck = require('./middlewares/adminMiddleware');
 const userLoginCheck = require('./middlewares/authMiddleware');
 const Bus = require('./models/bus')
+const User = require('./models/user')
+const Booking = require('./models/booking')
 // const mongoose = require('./config/db')
+
 
 dotenv.config();
 
@@ -77,6 +80,15 @@ app.get("/search/buses", async (req, res) => {
     res.json(routes);
 });
 
+app.get('/alluser', async (req, res) => {
+    let user = await User.find();
+    res.json(user);
+})
+
+app.get('/allbooking', async (req, res) => {
+    let user = await Booking.find();
+    res.json(user);
+})
 
 app.get('/logout', (req, res) => {
     try {

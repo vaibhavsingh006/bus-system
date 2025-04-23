@@ -69,6 +69,7 @@ router.post("/verify-otp", async (req, res) => {
             secure: isProduction,
             sameSite: isProduction ? 'None' : 'Lax',
             path: '/',
+            domain: isProduction ? '.onrender.com' : undefined
         });
 
         // ✅ Then send response

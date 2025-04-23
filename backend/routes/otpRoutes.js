@@ -103,41 +103,80 @@ router.post("/send-otp", async (req, res) => {
 router.post("/verify-otp", async (req, res) => {
     const { email, otp } = req.body;
 
-    const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ verified: false, message: "User not found" });
-
-    let validOTP;
-    try {
-        validOTP = isProduction
-            ? await redisClient.get(`otp:${email}`)
-            : otpMap.get(email);
-    } catch (err) {
-        return res.status(500).json({ message: "OTP check failed" });
+    if (!email || !otp) {
+        return res.status(400).json({ message: "Email and OTP are required" });
     }
 
-    console.log({ validOTP, otp, email });
+    try {
+        let validOTP;
 
-    if (validOTP === otp) {
         if (isProduction) {
-            await redisClient.del(`otp:${email}`);
+            validOTP = await redis.get(`otp:${email}`);
         } else {
-            otpMap.delete(email);
+            validOTP = otpMap.get(email);
         }
 
-        const token = jwt.sign({ email, id: user._id }, process.env.JWT_KEY);
+        console.log({ email, otp, validOTP });
 
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: isProduction,
-            sameSite: isProduction ? 'None' : 'Lax',
-            path: '/',
-            domain: isProduction ? '.onrender.com' : undefined,
-        });
+        if (validOTP === otp) {
+            // ✅ Remove OTP after verification
+            if (isProduction) {
+                await redis.del(`otp:${email}`);
+            } else {
+                otpMap.delete(email);
+            }
 
-        return res.json({ verified: true });
-    } else {
-        return res.status(400).json({ verified: false, message: "Invalid OTP" });
+            return res.json({ verified: true });
+        } else {
+            return res.status(400).json({ verified: false, message: "Invalid OTP" });
+        }
+
+    } catch (err) {
+        console.error("OTP verification failed:", err);
+        return res.status(500).json({ message: "OTP verification error" });
     }
 });
+
+
+// router.post("/verify-otp", async (req, res) => {
+//     const { email, otp } = req.body;
+
+//     const user = await User.findOne({ email });
+//     console.log(user);
+//     if (!user) return res.status(404).json({ verified: false, message: "User not found" });
+
+//     let validOTP;
+//     try {
+//         validOTP = isProduction
+//             ? await redisClient.get(`otp:${email}`)
+//             : otpMap.get(email);
+//     } catch (err) {
+//         return res.status(500).json({ message: "OTP check failed" });
+//     }
+
+//     console.log({ validOTP, otp, email });
+
+//     if (validOTP === otp) {
+//         if (isProduction) {
+//             await redisClient.del(`otp:${email}`);
+//         } else {
+//             otpMap.delete(email);
+//         }
+
+//         const token = jwt.sign({ email, id: user._id }, process.env.JWT_KEY);
+
+//         res.cookie('token', token, {
+//             httpOnly: true,
+//             secure: isProduction,
+//             sameSite: isProduction ? 'None' : 'Lax',
+//             path: '/',
+//             domain: isProduction ? '.onrender.com' : undefined,
+//         });
+
+//         return res.json({ verified: true });
+//     } else {
+//         return res.status(400).json({ verified: false, message: "Invalid OTP" });
+//     }
+// });
 
 module.exports = router;

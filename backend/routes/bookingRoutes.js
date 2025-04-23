@@ -117,6 +117,17 @@ router.post("/book", async (req, res) => {
 
         await booking.save();
 
+        // ✅ inside /book route (after booking success)
+        const token = jwt.sign({ email, id: user._id }, process.env.JWT_KEY);
+
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+            path: '/',
+            domain: process.env.NODE_ENV === 'production' ? '.onrender.com' : undefined,
+        });
+
         // 7. Update availableSeats
         bus.availableSeats -= selectedSeats.length;
         await bus.save();

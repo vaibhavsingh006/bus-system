@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
 const Bus = require("../models/bus.js")
 const Booking = require("../models/booking.js")
 const User = require("../models/user.js");

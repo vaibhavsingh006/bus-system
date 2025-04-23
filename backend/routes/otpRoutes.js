@@ -111,7 +111,7 @@ router.post("/verify-otp", async (req, res) => {
         let validOTP;
 
         if (isProduction) {
-            validOTP = await redis.get(`otp:${email}`);
+            validOTP = await redisClient.get(`otp:${email}`);
         } else {
             validOTP = otpMap.get(email);
         }
@@ -121,7 +121,7 @@ router.post("/verify-otp", async (req, res) => {
         if (validOTP === otp) {
             // ✅ Remove OTP after verification
             if (isProduction) {
-                await redis.del(`otp:${email}`);
+                await redisClient.del(`otp:${email}`);
             } else {
                 otpMap.delete(email);
             }
@@ -136,6 +136,7 @@ router.post("/verify-otp", async (req, res) => {
         return res.status(500).json({ message: "OTP verification error" });
     }
 });
+
 
 
 // router.post("/verify-otp", async (req, res) => {

@@ -31,7 +31,7 @@ const HomePage = () => {
             <PopularRoutes />
             <FeaturedBuses />
 
-            <section className="py-12 bg-purple-400 text-white relative before:absolute before:top-0 before:w-full before:h-full before:bg-[#0000008a]"
+            <section className="py-12 bg-purple-400 text-white relative before:absolute before:top-0 before:w-full before:h-full before:bg-no-repeat before:bg-[#0000008a]"
                 style={{ backgroundImage: "url('/banner.jpeg')" }}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h2 className="text-3xl font-bold mb-4 z-10 relative">Ready to Start Your Journey?</h2>

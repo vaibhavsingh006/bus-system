@@ -90,6 +90,11 @@ app.get('/allbooking', async (req, res) => {
     res.json(user);
 })
 
+app.get('/allbus', async (req, res) => {
+    let user = await Bus.find();
+    res.json(user);
+})
+
 app.get('/logout', (req, res) => {
     try {
         res.clearCookie('token', {

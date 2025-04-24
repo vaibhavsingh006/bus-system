@@ -32,13 +32,10 @@ const SearchForm = () => {
     }, []);
 
     const uniqueFrom = [...new Set(routes.map(route => route.from))];
-    console.log(uniqueFrom, 'from');
     const uniqueTo = [...new Set(routes.map(route => route.to))];
-    console.log(uniqueTo, 'to');
 
     const handleFromChange = (value) => {
         setFrom(value);
-        console.log(value);
 
         const filtered = uniqueFrom.filter(item =>
             item.toLowerCase().includes(value.toLowerCase())
@@ -47,7 +44,6 @@ const SearchForm = () => {
         setShowFromSuggestions(true);
         setFromActiveIndex(-1);
     };
-    console.log(showFromSuggestions)
     const handleToChange = (value) => {
         setTo(value);
         const filtered = uniqueTo.filter(item =>
@@ -64,7 +60,6 @@ const SearchForm = () => {
 
         if (e.key === "ArrowDown") {
             e.preventDefault();
-            console.log('click');
 
             setFromActiveIndex((prev) =>
                 prev < fromSuggestions.length - 1 ? prev + 1 : 0
@@ -75,7 +70,6 @@ const SearchForm = () => {
                 prev > 0 ? prev - 1 : fromSuggestions.length - 1
             );
         } else if (e.key === "Enter") {
-            console.log('enter');
             if (fromActiveIndex >= 0) {
                 setFrom(fromSuggestions[fromActiveIndex]);
                 setShowFromSuggestions(false);
@@ -89,7 +83,6 @@ const SearchForm = () => {
 
         if (e.key === "ArrowDown") {
             e.preventDefault();
-            console.log('click');
 
             setToActiveIndex((prev) =>
                 prev < toSuggestions.length - 1 ? prev + 1 : 0
@@ -100,7 +93,6 @@ const SearchForm = () => {
                 prev > 0 ? prev - 1 : toSuggestions.length - 1
             );
         } else if (e.key === "Enter") {
-            console.log('enter');
             if (toActiveIndex >= 0) {
                 setTo(toSuggestions[toActiveIndex]);
                 setShowToSuggestions(false);

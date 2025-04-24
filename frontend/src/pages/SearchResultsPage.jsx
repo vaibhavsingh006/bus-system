@@ -200,12 +200,20 @@ const SearchResultsPage = () => {
                 <div className="space-y-4">
                   {filteredBuses && filteredBuses.map((bus) => (
                     <div key={bus._id} className="bg-white rounded-lg shadow-sm p-4">
-                      <h3 className="text-lg font-bold text-gray-700">{bus.name}</h3>
-                      <p className="text-gray-700">Date: {new Date(bus.date).toLocaleDateString("en-GB", {
+                      <div className=" flex justify-between items-center">
+                        <h3 className="text-lg font-bold text-gray-700">{bus.name}</h3>
+                        <h4 className="text-lg font-semibold text-gray-600">${bus.price}</h4>
+                      </div>
+                      {bus.amenities.includes('AC') ? <p className="text-xs  text-gray-500">AC sleeper</p> : <p className=" text-xs text-gray-500">non AC</p>}
+                      {/* <p className="text-gray-700">Date: {new Date(bus.date).toLocaleDateString("en-GB", {
                         day: "numeric",
                         month: "short",
-                      })}</p>
-                      <button onClick={() => handleSelectSeats(bus._id)} className="bg-blue-600 text-white p-2 rounded-md">
+                      })}</p> */}
+                      <div className=" flex justify-between items-center mt-2">
+                        <p className="text-sm font-semibold text-gray-500">{bus.seats} seater</p>
+                        <p className="text-sm font-semibold text-gray-500">{bus.time}</p>
+                      </div>
+                      <button onClick={() => handleSelectSeats(bus._id)} className="bg-blue-600 text-white mt-1.5 p-2 rounded-md">
                         Select Seats
                       </button>
                     </div>

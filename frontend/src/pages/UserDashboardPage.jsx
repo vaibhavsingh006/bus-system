@@ -238,7 +238,8 @@ const UserDashboardPage = () => {
                         </div>
                         <div className="p-4 bg-white border-t">
                           <p><strong>Bus:</strong> {booking.bus.name} | {booking.bus.from} → {booking.bus.to}</p>
-                          <p><strong>Date:</strong> {new Date(booking.bus.date).toLocaleDateString()} | <strong>Time:</strong> {booking.bus.time}</p>
+                          <p><strong>Date:</strong> {new Date(booking.bus.date).toLocaleDateString()} | <strong>Time:</strong>
+                            {new Date(`1970-01-01T${booking.bus.time}:00`).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })}</p>
                           <p><strong>Seats:</strong> {booking.seatNumbers.join(", ")}</p>
                         </div>
                       </div>

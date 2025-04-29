@@ -106,23 +106,46 @@ router.get("/all-bookings", ownerProtect, async (req, res) => {
 });
 
 
+
 // ✅ Add a new bus
 router.post("/add-bus", ownerProtect, async (req, res) => {
     try {
-        const { name, from, to, date, time, seats, price, amenities } = req.body;
+        const {
+            name, from, to, time, seats, price,
+            amenities, busNumber, daysOfOperation,
+            seatType, duration
+        } = req.body;
+
+        // Validate required fields manually
+        if (
+            !name || !from || !to || !time || !seats || !price ||
+            !busNumber || !daysOfOperation || !seatType || !duration
+        ) {
+            return res.status(400).json({ message: "Please provide all required fields" });
+        }
+
+        // Check if busNumber already exists
+        const existingBus = await Bus.findOne({ busNumber });
+        if (existingBus) {
+            return res.status(400).json({ message: "Bus number already exists" });
+        }
 
         const newBus = new Bus({
             name,
             from,
             to,
-            date,
             time,
             seats,
             availableSeats: seats,
             price,
-            amenities
+            amenities,
+            busNumber,
+            daysOfOperation,
+            seatType,
+            duration,
+            isActive: true // Default true on creation
         });
-        console.log(newBus);
+
         await newBus.save();
         res.status(201).json({ message: "Bus added successfully", bus: newBus });
     } catch (err) {
@@ -130,22 +153,58 @@ router.post("/add-bus", ownerProtect, async (req, res) => {
     }
 });
 
+
+router.get("/get-bus/:id", ownerProtect, async (req, res) => {
+    try {
+        const bus = await Bus.findById(req.params.id);
+        if (!bus) {
+            return res.status(404).json({ message: "Bus not found" });
+        }
+        res.status(200).json({ bus });
+    } catch (error) {
+        console.error("Error fetching bus:", error.message);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+
+
 // ✅ Update a bus
 router.put("/update-bus/:id", ownerProtect, async (req, res) => {
     try {
-        const updatedBus = await Bus.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            { new: true }
-        );
+        const { busNumber, seats } = req.body;
 
-        if (!updatedBus) return res.status(404).json({ message: "Bus not found" });
+        if (busNumber) {
+            // If busNumber is being updated, check if it's unique
+            const existingBus = await Bus.findOne({ busNumber, _id: { $ne: req.params.id } });
+            if (existingBus) {
+                return res.status(400).json({ message: "Bus number already exists" });
+            }
+        }
 
-        res.json({ message: "Bus updated", bus: updatedBus });
+        const bus = await Bus.findById(req.params.id);
+        if (!bus) {
+            return res.status(404).json({ message: "Bus not found" });
+        }
+
+        // Update all fields from req.body
+        Object.assign(bus, req.body);
+
+        // Agar seats update ho rahi hai, to availableSeats ko adjust karo
+        if (seats !== undefined) {
+            const bookedSeatsCount = bus.bookedSeats.length;
+            bus.availableSeats = seats - bookedSeatsCount;
+        }
+
+        await bus.save();
+
+        res.json({ message: "Bus updated successfully", bus });
     } catch (err) {
+        console.error("Error updating bus", err);
         res.status(500).json({ message: "Error updating bus", error: err.message });
     }
 });
+
 
 // ✅ Delete a bus
 router.delete("/delete-bus/:id", ownerProtect, async (req, res) => {

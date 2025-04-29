@@ -267,8 +267,8 @@ const BookingSummaryPage = () => {
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Time</p>
-                    <p className="font-medium text-gray-700">
-                      {busDetails.departureTime} - {busDetails.arrivalTime}
+                    <p className="text-gray-700 font-medium">
+                      {new Date(`1970-01-01T${busDetails.time}:00`).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })}
                     </p>
                   </div>
                 </div>

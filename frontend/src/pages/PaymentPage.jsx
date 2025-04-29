@@ -260,29 +260,29 @@ const PaymentPage = () => {
           ) : (
             <div className="bg-white rounded-lg shadow-sm overflow-hidden">
               <div className="p-6">
-                <h2 className="text-xl font-bold mb-4">Order Summary</h2>
+                <h2 className="text-xl font-bold text-gray-700 mb-4">Order Summary</h2>
 
                 <div className="space-y-4 mb-6">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-gray-500">Bus</p>
-                      <p className="font-medium">{busDetails.name}</p>
+                      <p className="text-sm text-gray-600">Bus</p>
+                      <p className="font-medium text-gray-700">{busDetails.name}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">Route</p>
-                      <p className="font-medium">
+                      <p className="text-sm text-gray-600">Route</p>
+                      <p className="font-medium text-gray-700">
                         {busDetails.from} to {busDetails.to}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">Date & Time</p>
-                      <p className="font-medium">
-                        {busDetails.date}, {busDetails.departureTime}
+                      <p className="text-sm text-gray-600">Time</p>
+                      <p className="text-gray-700 font-medium">
+                        {new Date(`1970-01-01T${busDetails.time}:00`).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">Seats</p>
-                      <p className="font-medium">{selectedSeats.join(", ")}</p>
+                      <p className="text-sm text-gray-600">Seats</p>
+                      <p className="font-medium text-gray-700">{selectedSeats.join(", ")}</p>
                     </div>
                   </div>
 
@@ -311,7 +311,7 @@ const PaymentPage = () => {
                           maxLength={19}
                           value={paymentData.cardNumber}
                           onChange={handleChange}
-                          className={`appearance-none block w-full pl-10 pr-3 py-2 border ${errors.cardNumber ? "border-red-500" : "border-gray-300"
+                          className={`appearance-none block w-full text-gray-600 pl-10 pr-3 py-2 border ${errors.cardNumber ? "border-red-500" : "border-gray-300"
                             } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
                           placeholder="1234 5678 9012 3456"
                         />
@@ -334,7 +334,7 @@ const PaymentPage = () => {
                         type="text"
                         value={paymentData.cardName}
                         onChange={handleChange}
-                        className={`appearance-none block w-full px-3 py-2 border ${errors.cardName ? "border-red-500" : "border-gray-300"
+                        className={`appearance-none block w-full px-3 py-2 text-gray-600 border ${errors.cardName ? "border-red-500" : "border-gray-300"
                           } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
                         placeholder="John Doe"
                       />
@@ -362,7 +362,7 @@ const PaymentPage = () => {
                             maxLength={5}
                             value={paymentData.expiryDate}
                             onChange={handleChange}
-                            className={`appearance-none block w-full pl-10 pr-3 py-2 border ${errors.expiryDate ? "border-red-500" : "border-gray-300"
+                            className={`appearance-none block w-full pl-10 text-gray-600 pr-3 py-2 border ${errors.expiryDate ? "border-red-500" : "border-gray-300"
                               } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
                             placeholder="MM/YY"
                           />
@@ -390,7 +390,7 @@ const PaymentPage = () => {
                             maxLength={4}
                             value={paymentData.cvv}
                             onChange={handleChange}
-                            className={`appearance-none block w-full pl-10 pr-3 py-2 border ${errors.cvv ? "border-red-500" : "border-gray-300"
+                            className={`appearance-none block w-full pl-10 pr-3 py-2 text-gray-600 border ${errors.cvv ? "border-red-500" : "border-gray-300"
                               } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
                             placeholder="123"
                           />

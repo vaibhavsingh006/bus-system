@@ -26,6 +26,20 @@ router.get("/search-buses", async (req, res) => {
 });
 
 
+router.get("/get-bus/:id", async (req, res) => {
+    try {
+        const bus = await Bus.findById(req.params.id);
+        if (!bus) {
+            return res.status(404).json({ message: "Bus not found" });
+        }
+        res.status(200).json({ bus });
+    } catch (error) {
+        console.error("Error fetching bus:", error.message);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+
 // ✅ Get bus details by ID (public)
 router.get("/:id", async (req, res) => {
     try {

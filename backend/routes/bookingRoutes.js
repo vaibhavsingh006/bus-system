@@ -7,67 +7,6 @@ const User = require("../models/user.js");
 const authMiddleware = require('../middlewares/authMiddleware.js')
 
 
-
-// ✅ Book seats for a bus
-// ai
-// router.post("/book", async (req, res) => {
-//     try {
-//         // const { name, email, phone, busId, seatNumbers, totalPrice } = req.body;
-
-//         const { passengerDetails, busId, selectedSeats, totalAmount } = req.body;
-//         const { name, email, phone } = passengerDetails;
-//         console.log(selectedSeats, 'dlele');
-//         console.log(totalPrice, 'total');
-
-
-//         // 1. Check if user exists by email
-//         let user = await User.findOne({ email });
-
-//         // 2. If not, create new user (no password required)
-//         if (!user) {
-//             user = await User.create({ name, email, phone: contact });
-//         }
-
-//         // 3. Find the bus
-//         const bus = await Bus.findById(busId);
-//         if (!bus) return res.status(404).json({ message: "Bus not found" });
-
-//         // 4. Check seat availability
-//         if (bus.availableSeats < seatNumbers?.length) {
-//             return res.status(400).json({ message: "Not enough seats available" });
-//         }
-
-//         // 5. Check for already booked seats
-//         const existingBookings = await Booking.find({ bus: busId });
-//         const bookedSeats = existingBookings.flatMap(booking => booking.seatNumbers);
-//         const alreadyBooked = seatNumbers.some(seat => bookedSeats.includes(seat));
-//         if (alreadyBooked) {
-//             return res.status(400).json({ message: "One or more seats already booked" });
-//         }
-
-//         // 6. Create booking
-//         const booking = new Booking({
-//             user: user._id,
-//             bus: busId,
-//             seatNumbers: selectedSeats,
-//             totalPrice: totalAmount,
-//             paymentStatus: "Pending",
-//         });
-
-//         await booking.save();
-
-//         // 7. Update availableSeats
-//         bus.availableSeats -= seatNumbers.length;
-//         await bus.save();
-
-//         res.status(201).json({ message: "Booking successful", booking });
-//     } catch (err) {
-//         console.error("Booking error:", err);
-//         res.status(500).json({ message: "Booking failed", error: err.message });
-//     }
-// });
-
-
 router.post("/book", async (req, res) => {
     try {
         const { passengerDetails, busId, selectedSeats, totalAmount } = req.body;

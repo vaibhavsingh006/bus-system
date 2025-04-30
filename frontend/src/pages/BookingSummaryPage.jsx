@@ -91,6 +91,8 @@ import { useLocation, useNavigate } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import { User, Mail, Phone, AlertCircle } from "lucide-react"
+import { calculateArrival } from '../utils/calculateArrival';
+
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -243,7 +245,7 @@ const BookingSummaryPage = () => {
             <div className="p-6">
               <h2 className="text-xl font-bold mb-4 text-gray-700">Trip Details</h2>
 
-              <div className="space-y-4 mb-6">
+              {/* <div className="space-y-4 mb-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-gray-500">Bus</p>
@@ -285,6 +287,72 @@ const BookingSummaryPage = () => {
                       </span>
                     ))}
                   </div>
+                </div>
+              </div> */}
+              <div className="space-y-4 text-sm text-gray-700">
+                {/* Basic Info */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-gray-500">Bus Name</p>
+                    <p className="font-medium">{busDetails.name}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500">Operator</p>
+                    <p className="font-medium">{busDetails.operator || "VBUS Travels "}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500">Bus Type</p>
+                    <p className="font-medium">{busDetails.seatType || "N/A"}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500">Bus Number</p>
+                    <p className="font-medium">{busDetails.busNumber || "N/A"}</p>
+                  </div>
+                </div>
+
+                {/* Route & Timing */}
+                <div className="grid grid-cols-2 gap-4 pt-2 border-t">
+                  <div>
+                    <p className="text-gray-500">From</p>
+                    <p className="font-medium">{busDetails.from}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500">To</p>
+                    <p className="font-medium">{busDetails.to}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500">Departure</p>
+                    <p className="font-medium">
+                      {new Date(`1970-01-01T${busDetails.time}:00`).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true,
+                      })}
+
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500">Arrival</p>
+                    <p className="font-medium">{calculateArrival(busDetails.time, busDetails.duration)}</p>
+                  </div>
+                </div>
+
+                {/* Seats Info */}
+                <div className="pt-4 border-t">
+                  <p className="text-gray-500 mb-2">Selected Seats</p>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedSeats.map((seat) => (
+                      <span
+                        key={seat}
+                        className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                      >
+                        Seat {seat}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="text-sm text-gray-700 mt-2">
+                    Passengers: <span className="font-medium">{selectedSeats.length}</span>
+                  </p>
                 </div>
               </div>
 
@@ -386,16 +454,6 @@ const BookingSummaryPage = () => {
                       Send OTP to Email
                     </button>
                   )}
-
-                  {/* <button
-                    type="button"
-                    disabled={otpSent}
-                    onClick={handleSendOtp}
-                    className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-400"
-                  >
-                    {otpSent ? "OTP Sent" : "Send OTP"}
-                  </button> */}
-
                   {otpSent && !otpVerified && (
                     <div className="space-y-2">
                       <input

@@ -594,3 +594,160 @@ export default function AdminPage() {
   )
 }
 
+
+
+// import { ArrowDown, ArrowUp, Bus, Calendar, DollarSign, Users } from "lucide-react";
+// import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./components/ui/card"; // Assuming your Card component is here
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs"; // Assuming your Tabs component is here
+// import { BookingOverview } from "./components/admin/booking-overview"; // Adjust path as needed
+// import { RevenueChart } from "./components/admin/revenue-chart"; // Adjust path as needed
+// import { RecentBookings } from "./components/admin/recent-bookings"; // Adjust path as needed
+// import { TopRoutes } from "./components/admin/top-routes";
+
+
+// import React from 'react'
+
+// const AdminPanelPage = () => {
+//   return (
+//     <div className="space-y-6">
+//       <div>
+//         <h2 className="text-2xl font-bold tracking-tight">Dashboard</h2>
+//         <p className="text-muted-foreground">Overview of your bus booking system.</p>
+//       </div>
+
+//       {/* Overview Cards */}
+//       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+//         <Card>
+//           <CardHeader className="flex flex-row items-center justify-between pb-2">
+//             <CardTitle className="text-sm font-medium">Total Buses</CardTitle>
+//             <Bus className="h-4 w-4 text-muted-foreground" />
+//           </CardHeader>
+//           <CardContent>
+//             <div className="text-2xl font-bold">24</div>
+//             <p className="flex items-center text-xs text-muted-foreground">
+//               <ArrowUp className="mr-1 h-3 w-3 text-green-500" />
+//               <span className="text-green-500">+2</span> since last month
+//             </p>
+//           </CardContent>
+//         </Card>
+//         <Card>
+//           <CardHeader className="flex flex-row items-center justify-between pb-2">
+//             <CardTitle className="text-sm font-medium">Total Bookings</CardTitle>
+//             <Calendar className="h-4 w-4 text-muted-foreground" />
+//           </CardHeader>
+//           <CardContent>
+//             <div className="text-2xl font-bold">621</div>
+//             <p className="flex items-center text-xs text-muted-foreground">
+//               <ArrowUp className="mr-1 h-3 w-3 text-green-500" />
+//               <span className="text-green-500">+12%</span> from last week
+//             </p>
+//           </CardContent>
+//         </Card>
+//         <Card>
+//           <CardHeader className="flex flex-row items-center justify-between pb-2">
+//             <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+//             <Users className="h-4 w-4 text-muted-foreground" />
+//           </CardHeader>
+//           <CardContent>
+//             <div className="text-2xl font-bold">1,352</div>
+//             <p className="flex items-center text-xs text-muted-foreground">
+//               <ArrowUp className="mr-1 h-3 w-3 text-green-500" />
+//               <span className="text-green-500">+5%</span> from last month
+//             </p>
+//           </CardContent>
+//         </Card>
+//         <Card>
+//           <CardHeader className="flex flex-row items-center justify-between pb-2">
+//             <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+//             <DollarSign className="h-4 w-4 text-muted-foreground" />
+//           </CardHeader>
+//           <CardContent>
+//             <div className="text-2xl font-bold">$24,835</div>
+//             <p className="flex items-center text-xs text-muted-foreground">
+//               <ArrowDown className="mr-1 h-3 w-3 text-red-500" />
+//               <span className="text-red-500">-2%</span> from last month
+//             </p>
+//           </CardContent>
+//         </Card>
+//       </div>
+
+//       <Tabs defaultValue="overview" className="space-y-4">
+//         <TabsList>
+//           <TabsTrigger value="overview">Overview</TabsTrigger>
+//           <TabsTrigger value="analytics">Analytics</TabsTrigger>
+//           <TabsTrigger value="reports">Reports</TabsTrigger>
+//         </TabsList>
+//         <TabsContent value="overview" className="space-y-4">
+//           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+//             <Card className="lg:col-span-4">
+//               <CardHeader>
+//                 <CardTitle>Revenue Overview</CardTitle>
+//                 <CardDescription>Monthly revenue for the current year</CardDescription>
+//               </CardHeader>
+//               <CardContent className="pl-2">
+//                 <RevenueChart />
+//               </CardContent>
+//             </Card>
+//             <Card className="lg:col-span-3">
+//               <CardHeader>
+//                 <CardTitle>Booking Overview</CardTitle>
+//                 <CardDescription>Distribution of bookings by status</CardDescription>
+//               </CardHeader>
+//               <CardContent>
+//                 <BookingOverview />
+//               </CardContent>
+//             </Card>
+//           </div>
+//           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+//             <Card className="lg:col-span-4">
+//               <CardHeader>
+//                 <CardTitle>Recent Bookings</CardTitle>
+//                 <CardDescription>Latest booking transactions</CardDescription>
+//               </CardHeader>
+//               <CardContent>
+//                 <RecentBookings />
+//               </CardContent>
+//             </Card>
+//             <Card className="lg:col-span-3">
+//               <CardHeader>
+//                 <CardTitle>Top Routes</CardTitle>
+//                 <CardDescription>Most popular bus routes</CardDescription>
+//               </CardHeader>
+//               <CardContent>
+//                 <TopRoutes />
+//               </CardContent>
+//             </Card>
+//           </div>
+//         </TabsContent>
+//         <TabsContent value="analytics" className="space-y-4">
+//           <Card>
+//             <CardHeader>
+//               <CardTitle>Advanced Analytics</CardTitle>
+//               <CardDescription>Detailed analytics and insights</CardDescription>
+//             </CardHeader>
+//             <CardContent>
+//               <div className="h-[400px] flex items-center justify-center border rounded-md">
+//                 <p className="text-muted-foreground">Advanced analytics content would go here</p>
+//               </div>
+//             </CardContent>
+//           </Card>
+//         </TabsContent>
+//         <TabsContent value="reports" className="space-y-4">
+//           <Card>
+//             <CardHeader>
+//               <CardTitle>Reports</CardTitle>
+//               <CardDescription>Generate and download reports</CardDescription>
+//             </CardHeader>
+//             <CardContent>
+//               <div className="h-[400px] flex items-center justify-center border rounded-md">
+//                 <p className="text-muted-foreground">Reports content would go here</p>
+//               </div>
+//             </CardContent>
+//           </Card>
+//         </TabsContent>
+//       </Tabs>
+//     </div>
+//   )
+// }
+
+// export default AdminPanelPage

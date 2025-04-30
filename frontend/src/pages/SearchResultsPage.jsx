@@ -89,34 +89,6 @@ const SearchResultsPage = () => {
     navigate(`/seat-selection/${busId}`);
   };
 
-
-
-  // function calculateArrival(startTime, duration) {
-  //   // Parse start time
-  //   const [startHour, startMinute] = startTime.split(':').map(Number);
-  //   // Parse duration
-  //   const [durationHour, durationMinute] = duration.split('h').join('').split('m').join('').split(' ').map(Number);
-
-  //   // Create a date object for today with the start time
-  //   const date = new Date();
-  //   date.setHours(startHour);
-  //   date.setMinutes(startMinute);
-
-  //   // Add duration
-  //   date.setHours(date.getHours() + durationHour);
-  //   date.setMinutes(date.getMinutes() + durationMinute);
-
-  //   // Format to 12-hour time with AM/PM
-  //   let hours = date.getHours();
-  //   const minutes = date.getMinutes();
-  //   const ampm = hours >= 12 ? 'PM' : 'AM';
-  //   hours = hours % 12 || 12;
-
-  //   const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-
-  //   return `${hours}:${formattedMinutes} ${ampm}`;
-  // }
-
   function calculateArrival(startTime = "00:00", duration = "0h 0m") {
     try {
       const [startHour, startMinute] = startTime.split(':').map(Number);
@@ -229,24 +201,6 @@ const SearchResultsPage = () => {
                   <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
                 </div>
               ) : (
-                // <div className="space-y-4">
-                //   {filteredBuses && filteredBuses.map((bus) => (
-                //     <div key={bus._id} className="bg-white rounded-lg shadow-sm p-4">
-                //       <div className=" flex justify-between items-center">
-                //         <h3 className="text-lg font-bold text-gray-700">{bus.name}</h3>
-                //         <h4 className="text-lg font-semibold text-gray-600">${bus.price}</h4>
-                //       </div>
-                //       {bus.amenities.includes('AC') ? <p className="text-xs  text-gray-500">AC sleeper</p> : <p className=" text-xs text-gray-500">non AC</p>}
-                //       <div className=" flex justify-between items-center mt-2">
-                //         <p className="text-sm font-semibold text-gray-500">{bus.seats} seater</p>
-                //         <p className="text-sm font-semibold text-gray-500">{bus.time}</p>
-                //       </div>
-                //       <button onClick={() => handleSelectSeats(bus._id)} className="bg-blue-600 text-white mt-1.5 p-2 rounded-md">
-                //         Select Seats
-                //       </button>
-                //     </div>
-                //   ))}
-                // </div>
                 <div className="space-y-4">
                   {filteredBuses?.map((bus) => (
                     <div
@@ -277,7 +231,7 @@ const SearchResultsPage = () => {
                               ? new Date(`1970-01-01T${bus.time}:00`).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })
                               : "N/A"}
                           </div>
-                          <div className="text-xs">{bus.from || "From"}</div>
+                          <div className="text-xs font-semibold">{bus.from || "From"}</div>
                         </div>
 
                         <div className="flex items-center gap-1 text-gray-500 text-xs my-2 md:my-0">
@@ -289,7 +243,7 @@ const SearchResultsPage = () => {
                           <div className="text-base font-medium">
                             {calculateArrival(bus.time, bus.duration)}
                           </div>
-                          <div className="text-xs">{bus.to || "To"}</div>
+                          <div className="text-xs font-semibold">{bus.to || "To"}</div>
                         </div>
                       </div>
 
@@ -328,8 +282,6 @@ const SearchResultsPage = () => {
                     </div>
                   ))}
                 </div>
-
-
               )}
             </div>
           </div>

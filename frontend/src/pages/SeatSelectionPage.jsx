@@ -7,21 +7,6 @@ import Footer from "../components/Footer";
 import { ArrowRight } from "lucide-react";
 const API_URL = import.meta.env.VITE_API_URL;
 
-// Mock bus data
-const mockBusDetails = {
-  id: 1,
-  name: "Express Deluxe",
-  operator: "National Express",
-  departureTime: "08:00 AM",
-  arrivalTime: "11:30 AM",
-  from: "New York",
-  to: "Boston",
-  date: "2023-06-15",
-  price: 45,
-  totalSeats: 40,
-  bookedSeats: [3, 4, 7, 12, 15, 22, 25, 26, 33, 34, 38],
-};
-
 // ai
 const generateSeats = (totalSeats, bookedSeats) => {
   // Most buses have 2 seats on left, 3 seats on right
@@ -210,12 +195,12 @@ const SeatSelectionPage = () => {
                       {/* Bus front with driver area */}
                       <div className="relative mb-8">
                         <div className="w-full h-16 bg-gray-300 rounded-t-3xl flex items-center justify-center">
-                          <div className="absolute left-4 top-4 w-12 h-8 bg-blue-400 rounded-md flex items-center justify-center text-xs text-white font-medium">
-                            Driver
+                          <div className="absolute left-4 top-4 w-12 h-8  rounded-md  bg-gray-400 flex items-center justify-center text-xs text-white font-medium">
+                            Door
                           </div>
                           <div className="text-center font-semibold text-gray-700">FRONT</div>
-                          <div className="absolute right-4 top-4 w-12 h-8 bg-gray-400 rounded-md flex items-center justify-center text-xs text-white font-medium">
-                            Door
+                          <div className="absolute right-4 top-4 w-12 h-8 bg-blue-400 rounded-md flex items-center justify-center text-xs text-white font-medium">
+                            Driver
                           </div>
                         </div>
                       </div>
@@ -224,15 +209,15 @@ const SeatSelectionPage = () => {
                       <div className="flex justify-center gap-4 mb-6">
                         <div className="flex items-center gap-2">
                           <div className="w-6 h-6 bg-gray-200 rounded-md"></div>
-                          <span className="text-sm">Available</span>
+                          <span className="text-sm text-gray-600">Available</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <div className="w-6 h-6 bg-green-500 rounded-md"></div>
-                          <span className="text-sm">Selected</span>
+                          <span className="text-sm text-gray-600">Selected</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <div className="w-6 h-6 bg-red-500 rounded-md"></div>
-                          <span className="text-sm">Booked</span>
+                          <span className="text-sm text-gray-600">Booked</span>
                         </div>
                       </div>
 
@@ -246,8 +231,8 @@ const SeatSelectionPage = () => {
                                 {row.left.map((seat) => (
                                   <button
                                     key={seat.id}
-                                    className={`w-10 h-10 text-[#a8b5c0] rounded-t-md flex items-center justify-center text-sm font-medium ${getSeatStatus(seat.id) === "available"
-                                      ? "bg-gray-200 hover:bg-gray-300"
+                                    className={`w-10 h-10 text-[#a8b5c0]  rounded-t-md flex items-center !bg-gray-200 hover:!bg-gray-300 justify-center text-sm font-medium ${getSeatStatus(seat.id) === "available"
+                                      ? "!bg-gray-200 hover:!bg-gray-300"
                                       : getSeatStatus(seat.id) === "selected"
                                         ? "!bg-green-500 text-white"
                                         : "!bg-red-500 text-white cursor-not-allowed"
@@ -257,6 +242,7 @@ const SeatSelectionPage = () => {
                                   >
                                     {seat.id}
                                   </button>
+
                                 ))}
                               </div>
                             )}
@@ -275,7 +261,7 @@ const SeatSelectionPage = () => {
                                   <button
                                     key={seat.id}
                                     className={`w-10 h-10 text-[#a8b5c0] rounded-t-md flex items-center justify-center text-sm font-medium ${getSeatStatus(seat.id) === "available"
-                                      ? "bg-gray-200 hover:bg-gray-300"
+                                      ? "!bg-gray-200 hover:!bg-gray-300"
                                       : getSeatStatus(seat.id) === "selected"
                                         ? "!bg-green-500 text-white"
                                         : "!bg-red-500 text-white cursor-not-allowed"
@@ -296,7 +282,7 @@ const SeatSelectionPage = () => {
                                   <button
                                     key={seat.id}
                                     className={`w-10 h-10 text-[#a8b5c0] rounded-t-md flex items-center justify-center text-sm font-medium ${getSeatStatus(seat.id) === "available"
-                                      ? "bg-gray-200 hover:bg-gray-300"
+                                      ? "!bg-gray-200 hover:!bg-gray-300"
                                       : getSeatStatus(seat.id) === "selected"
                                         ? "!bg-green-500 text-white"
                                         : "!bg-red-500 !text-purple-500 cursor-not-allowed"
@@ -313,6 +299,8 @@ const SeatSelectionPage = () => {
                         ))}
                       </div>
 
+
+
                       {/* Bus back */}
                       <div className="w-full h-4 bg-gray-300 rounded-b-lg mt-6"></div>
                     </div>
@@ -320,14 +308,14 @@ const SeatSelectionPage = () => {
                 </div>
               </div>
 
-              <div className="w-full lg:w-1/3">
+              {/* <div className="w-full lg:w-1/3">
                 <div className="bg-white rounded-lg shadow-sm p-6">
                   <h3 className="text-xl font-bold mb-4 text-gray-700">Booking Summary</h3>
 
                   <div className="space-y-4 text-gray-700">
                     <div className="flex justify-between text-gray-700"><span>Bus</span><span>{busDetails.name}</span></div>
                     <div className="flex justify-between text-gray-700"><span>Route</span><span>{busDetails.from} to {busDetails.to}</span></div>
-                    <div className="flex justify-between text-gray-700"><span>Date</span><span>{busDetails.date}</span></div>
+
                     <div className="flex justify-between text-gray-700"><span>Time</span><span>{busDetails.departureTime} - {busDetails.arrivalTime}</span></div>
                     <div className="flex justify-between text-gray-700"><span>Selected Seats</span><span>{selectedSeats.join(", ") || "None"}</span></div>
                     <div className="border-t pt-4 flex justify-between text-gray-700">
@@ -340,14 +328,68 @@ const SeatSelectionPage = () => {
                     Proceed to Payment
                   </button>
                 </div>
+              </div> */}
+              <div className="w-full lg:w-1/3">
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h3 className="text-xl font-bold mb-4 text-gray-700">Booking Summary</h3>
+
+                  <div className="space-y-3 text-gray-700 text-sm">
+                    <div className="flex justify-between">
+                      <span className="font-medium">Bus Name</span>
+                      <span>{busDetails.name}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">Bus Number</span>
+                      <span>{busDetails.busNumber || "N/A"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">Route</span>
+                      <span>{busDetails.from} → {busDetails.to}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">Time</span>
+                      <span>{busDetails.time
+                        ? new Date(`1970-01-01T${busDetails.time}:00`).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })
+                        : "N/A"}</span>
+                    </div>
+                    {/* <div className="flex justify-between">
+                      <span className="font-medium">Journey Date</span>
+                      <span>{selectedDate || "N/A"}</span>
+                    </div> */}
+                    <div className="flex justify-between">
+                      <span className="font-medium">Seat Type</span>
+                      <span>{busDetails.seatType || "N/A"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">Selected Seats</span>
+                      <span>{selectedSeats.length > 0 ? selectedSeats.join(", ") : "None"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">Fare/Seat</span>
+                      <span>₹{busDetails.price || 0}</span>
+                    </div>
+                    <div className="border-t pt-3 flex justify-between text-base font-semibold">
+                      <span>Total Price</span>
+                      <span>₹{getTotalPrice()}</span>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={handleProceedToPayment}
+                    className="mt-6 w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md"
+                  >
+                    Proceed to Payment
+                  </button>
+                </div>
               </div>
+
             </div>
           )}
         </div>
       </div>
 
       <Footer />
-    </div>
+    </div >
   );
 };
 

@@ -4,23 +4,8 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Clock, Calendar, ArrowRight, Filter, Star } from "lucide-react";
 const API_URL = import.meta.env.VITE_API_URL;
+import { Clock3, BusFront, Users2, CalendarDays, BadgeIndianRupee } from "lucide-react";
 
-// Mock data for bus search results
-// const mockBuses = [
-//   {
-//     id: 1,
-//     name: "Express Deluxe",
-//     operator: "National Express",
-//     departureTime: "08:00 AM",
-//     arrivalTime: "11:30 AM",
-//     duration: "3h 30m",
-//     price: 45,
-//     availableSeats: 23,
-//     rating: 4.5,
-//     amenities: ["WiFi", "AC", "Charging Ports"],
-//   },
-
-// ]
 
 const SearchResultsPage = () => {
   const location = useLocation();
@@ -36,13 +21,6 @@ const SearchResultsPage = () => {
     to: new URLSearchParams(location.search).get("to") || "",
     date: new URLSearchParams(location.search).get("date") || "",
   };
-
-  useEffect(() => {
-    // Simulate API call to fetch buses
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  }, []);
 
   useEffect(() => {
     const fetchBuses = async () => {
@@ -110,6 +88,60 @@ const SearchResultsPage = () => {
   const handleSelectSeats = (busId) => {
     navigate(`/seat-selection/${busId}`);
   };
+
+
+
+  // function calculateArrival(startTime, duration) {
+  //   // Parse start time
+  //   const [startHour, startMinute] = startTime.split(':').map(Number);
+  //   // Parse duration
+  //   const [durationHour, durationMinute] = duration.split('h').join('').split('m').join('').split(' ').map(Number);
+
+  //   // Create a date object for today with the start time
+  //   const date = new Date();
+  //   date.setHours(startHour);
+  //   date.setMinutes(startMinute);
+
+  //   // Add duration
+  //   date.setHours(date.getHours() + durationHour);
+  //   date.setMinutes(date.getMinutes() + durationMinute);
+
+  //   // Format to 12-hour time with AM/PM
+  //   let hours = date.getHours();
+  //   const minutes = date.getMinutes();
+  //   const ampm = hours >= 12 ? 'PM' : 'AM';
+  //   hours = hours % 12 || 12;
+
+  //   const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+  //   return `${hours}:${formattedMinutes} ${ampm}`;
+  // }
+
+  function calculateArrival(startTime = "00:00", duration = "0h 0m") {
+    try {
+      const [startHour, startMinute] = startTime.split(':').map(Number);
+      const [durationHour, durationMinute] = duration.match(/\d+/g).map(Number);
+
+      const date = new Date();
+      date.setHours(startHour || 0);
+      date.setMinutes(startMinute || 0);
+      date.setHours(date.getHours() + (durationHour || 0));
+      date.setMinutes(date.getMinutes() + (durationMinute || 0));
+
+      let hours = date.getHours();
+      const minutes = date.getMinutes();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12 || 12;
+      const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+      return `${hours}:${formattedMinutes} ${ampm}`;
+    } catch (err) {
+      return "N/A";
+    }
+  }
+
+
+
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -197,28 +229,107 @@ const SearchResultsPage = () => {
                   <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
                 </div>
               ) : (
+                // <div className="space-y-4">
+                //   {filteredBuses && filteredBuses.map((bus) => (
+                //     <div key={bus._id} className="bg-white rounded-lg shadow-sm p-4">
+                //       <div className=" flex justify-between items-center">
+                //         <h3 className="text-lg font-bold text-gray-700">{bus.name}</h3>
+                //         <h4 className="text-lg font-semibold text-gray-600">${bus.price}</h4>
+                //       </div>
+                //       {bus.amenities.includes('AC') ? <p className="text-xs  text-gray-500">AC sleeper</p> : <p className=" text-xs text-gray-500">non AC</p>}
+                //       <div className=" flex justify-between items-center mt-2">
+                //         <p className="text-sm font-semibold text-gray-500">{bus.seats} seater</p>
+                //         <p className="text-sm font-semibold text-gray-500">{bus.time}</p>
+                //       </div>
+                //       <button onClick={() => handleSelectSeats(bus._id)} className="bg-blue-600 text-white mt-1.5 p-2 rounded-md">
+                //         Select Seats
+                //       </button>
+                //     </div>
+                //   ))}
+                // </div>
                 <div className="space-y-4">
-                  {filteredBuses && filteredBuses.map((bus) => (
-                    <div key={bus._id} className="bg-white rounded-lg shadow-sm p-4">
-                      <div className=" flex justify-between items-center">
-                        <h3 className="text-lg font-bold text-gray-700">{bus.name}</h3>
-                        <h4 className="text-lg font-semibold text-gray-600">${bus.price}</h4>
+                  {filteredBuses?.map((bus) => (
+                    <div
+                      key={bus._id}
+                      className="border border-green-200 rounded-xl p-5 shadow-sm bg-white transition hover:shadow-md"
+                    >
+                      {/* Top Header */}
+                      <div className="flex flex-col md:flex-row justify-between items-center gap-3">
+                        <div className="flex items-center gap-3">
+                          <h2 className="text-lg font-bold text-green-600">{bus.name || "Bus Name"}</h2>
+                          {bus.price <= 500 && (
+                            <span className="bg-green-100 text-green-700 text-xs font-medium px-2 py-0.5 rounded-full">
+                              Cheapest
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-1 text-xl font-semibold text-gray-800">
+                          <BadgeIndianRupee className="w-5 h-5" />
+                          {bus.price ?? "N/A"}
+                        </div>
                       </div>
-                      {bus.amenities.includes('AC') ? <p className="text-xs  text-gray-500">AC sleeper</p> : <p className=" text-xs text-gray-500">non AC</p>}
-                      {/* <p className="text-gray-700">Date: {new Date(bus.date).toLocaleDateString("en-GB", {
-                        day: "numeric",
-                        month: "short",
-                      })}</p> */}
-                      <div className=" flex justify-between items-center mt-2">
-                        <p className="text-sm font-semibold text-gray-500">{bus.seats} seater</p>
-                        <p className="text-sm font-semibold text-gray-500">{bus.time}</p>
+
+                      {/* Time and Route */}
+                      <div className="flex flex-col md:flex-row justify-between items-center mt-4 text-sm text-gray-700">
+                        <div className="text-center md:text-left">
+                          <div className="text-base font-medium">
+                            {bus.time
+                              ? new Date(`1970-01-01T${bus.time}:00`).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })
+                              : "N/A"}
+                          </div>
+                          <div className="text-xs">{bus.from || "From"}</div>
+                        </div>
+
+                        <div className="flex items-center gap-1 text-gray-500 text-xs my-2 md:my-0">
+                          <Clock3 className="w-4 h-4" />
+                          <span>{bus.duration || "0h 0m"}</span>
+                        </div>
+
+                        <div className="text-center md:text-right">
+                          <div className="text-base font-medium">
+                            {calculateArrival(bus.time, bus.duration)}
+                          </div>
+                          <div className="text-xs">{bus.to || "To"}</div>
+                        </div>
                       </div>
-                      <button onClick={() => handleSelectSeats(bus._id)} className="bg-blue-600 text-white mt-1.5 p-2 rounded-md">
-                        Select Seats
-                      </button>
+
+                      {/* Extra Info */}
+                      <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 text-xs text-gray-600 mt-4 gap-2">
+                        <div className="flex items-center gap-1">
+                          <Users2 className="w-4 h-4" />
+                          {bus.seats ?? 0} Seats
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <BusFront className="w-4 h-4" />
+                          {bus.availableSeats ?? 0} Available
+                        </div>
+                        <div>{bus.seatType || "N/A"}</div>
+                        <div>{bus.busNumber || "N/A"}</div>
+                        <div className="truncate">{(bus.amenities?.length > 0 ? bus.amenities.slice(0, 2).join(", ") + "..." : "Amenities")}</div>
+                      </div>
+
+                      {/* Footer */}
+                      <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-2">
+                        <div className="flex gap-2 flex-wrap text-xs text-gray-500">
+                          <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
+                            <CalendarDays className="w-3.5 h-3.5" />
+                            {bus.daysOfOperation?.join(", ") || "Daily"}
+                          </span>
+                          <span className="bg-gray-100 px-2 py-1 rounded-full">One-way</span>
+                          <span className="bg-gray-100 px-2 py-1 rounded-full">Direct</span>
+                        </div>
+                        <button
+                          onClick={() => handleSelectSeats(bus._id)}
+                          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full sm:w-auto"
+                        >
+                          Select Seats
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
+
+
               )}
             </div>
           </div>
@@ -231,54 +342,3 @@ const SearchResultsPage = () => {
 };
 
 export default SearchResultsPage;
-
-// {
-//   id: 2,
-//   name: "Luxury Liner",
-//   operator: "Premium Coaches",
-//   departureTime: "09:15 AM",
-//   arrivalTime: "12:45 PM",
-//   duration: "3h 30m",
-//   price: 55,
-//   availableSeats: 15,
-//   rating: 4.8,
-//   amenities: ["WiFi", "AC", "Snacks", "Entertainment"],
-// },
-// {
-//   id: 3,
-//   name: "Budget Express",
-//   operator: "City Link",
-//   departureTime: "10:30 AM",
-//   arrivalTime: "02:00 PM",
-//   duration: "3h 30m",
-//   price: 35,
-//   availableSeats: 8,
-//   rating: 4.2,
-//   amenities: ["AC"],
-// },
-// {
-//   id: 4,
-//   name: "Night Rider",
-//   operator: "Moonlight Travel",
-//   departureTime: "11:00 PM",
-//   arrivalTime: "06:00 AM",
-//   duration: "7h 00m",
-//   price: 65,
-//   availableSeats: 20,
-//   rating: 4.6,
-//   amenities: ["WiFi", "AC", "Reclining Seats", "Blankets"],
-// },
-// {
-//   id: 5,
-//   name: "City Hopper",
-//   operator: "Urban Transit",
-//   departureTime: "02:00 PM",
-//   arrivalTime: "05:30 PM",
-//   duration: "3h 30m",
-//   price: 40,
-//   availableSeats: 12,
-//   rating: 4.3,
-//   amenities: ["WiFi", "AC"],
-// },
-
-

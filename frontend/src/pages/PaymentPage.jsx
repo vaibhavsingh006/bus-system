@@ -10,7 +10,7 @@ const PaymentPage = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const { id } = useParams();
-  const { busDetails, selectedSeats, totalPrice, passengerDetails } = location.state || {
+  const { busDetails, selectedSeats, totalPrice, passengerDetails, travelDate } = location.state || {
     busDetails: {
       name: "Express Deluxe",
       operator: "National Express",
@@ -221,7 +221,7 @@ const PaymentPage = () => {
       <div className="bg-blue-600 py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-white">
-            <h1 className="text-2xl font-bold">Payment</h1>
+            <h1 className="text-[30px] sm:text-5xl font-bold">Payment</h1>
             <p className="mt-1">Complete your booking by making a secure payment</p>
           </div>
         </div>
@@ -272,6 +272,12 @@ const PaymentPage = () => {
                       <p className="text-sm text-gray-600">Route</p>
                       <p className="font-medium text-gray-700">
                         {busDetails.from} to {busDetails.to}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">Date</p>
+                      <p className="font-medium text-gray-700">
+                        {travelDate}
                       </p>
                     </div>
                     <div>

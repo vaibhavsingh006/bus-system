@@ -4,12 +4,13 @@ const jwt = require('jsonwebtoken');
 const Bus = require("../models/bus.js")
 const Booking = require("../models/booking.js")
 const User = require("../models/user.js");
+const Passenger = require("../models/passenger.js");
 const authMiddleware = require('../middlewares/authMiddleware.js')
 
 
 router.post("/book", async (req, res) => {
     try {
-        const { passengerDetails, busId, selectedSeats, totalAmount } = req.body;
+        const { passengerDetails, busId, selectedSeats, passengerList, totalAmount, travelDate } = req.body;
         const { name, email, phone } = passengerDetails;
 
         // Defensive checks
@@ -53,9 +54,33 @@ router.post("/book", async (req, res) => {
             seatNumbers: selectedSeats, // ✅ using schema key
             totalPrice: totalAmount,    // ✅ using schema key
             paymentStatus: "Pending",
+            travelDate,
+            passengers: passengerList.map(p => ({
+                name: p.name,
+                age: p.age,
+                gender: p.gender,
+                seatNumber: p.seatNumber
+            }))
         });
 
         await booking.save();
+
+
+        // passenger create :\
+        if (Array.isArray(passengerList) && passengerList.length > 0) {
+            const passengerDocs = passengerList.map(passenger => ({
+                name: passenger.name,
+                age: passenger.age,
+                gender: passenger.gender,
+                seatNumber: passenger.seatNumber,
+                booking: booking._id,
+                bus: busId,
+                user: user._id
+            }));
+
+            await Passenger.insertMany(passengerDocs);
+        }
+        // passenger create :
 
         // ✅ inside /book route (after booking success)
         console.log('cookie', email, user._id);
@@ -83,6 +108,28 @@ router.post("/book", async (req, res) => {
 
 // ai
 
+router.post('/passengeradd', async (req, res) => {
+    try {
+        const { passengers, busId } = req.body;
+
+        if (!passengers || !Array.isArray(passengers) || passengers.length === 0) {
+            return res.status(400).json({ message: 'Passengers data is required' });
+        }
+
+        const passengerDocs = passengers.map(passenger => ({
+            ...passenger,
+            user: req.user.id,
+            bus: busId,
+        }));
+
+        const savedPassengers = await Passenger.insertMany(passengerDocs);
+
+        res.status(201).json({ message: 'Passengers saved successfully', passengers: savedPassengers });
+    } catch (err) {
+        console.error('Error saving passengers:', err);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
 
 
 // ✅ Get bookings for logged-in user

@@ -1,7 +1,7 @@
 import React from "react"
 
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { ArrowRight } from "lucide-react";
@@ -82,19 +82,15 @@ const generateSeats = (totalSeats, bookedSeats) => {
 const SeatSelectionPage = () => {
   const { busId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const date = new URLSearchParams(location.search).get("date");
   const [busDetails, setBusDetails] = useState([]);
   const [seats, setSeats] = useState([]);
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setSeats(generateSeats(busDetails.totalSeats, busDetails.bookedSeats));
-  //     setLoading(false);
-  //   }, 1000);
-  // }, [busDetails]);
-
   // ai
+  console.log(date)
   useEffect(() => {
     const fetchBusDetails = async () => {
       try {
@@ -150,6 +146,7 @@ const SeatSelectionPage = () => {
         busDetails,
         selectedSeats,
         totalPrice: getTotalPrice(),
+        travelDate: date,
       },
     });
   };
@@ -160,7 +157,7 @@ const SeatSelectionPage = () => {
       <div className="bg-blue-600 py-6">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-white">
-            <h1 className="text-2xl font-bold">Select Your Seats</h1>
+            <h1 className="text-[30px] sm:text-5xl font-bold">Select Your Seats</h1>
             {/* <p className="mt-1">{busDetails.name} - {busDetails.operator}</p> */}
           </div>
         </div>
@@ -231,7 +228,7 @@ const SeatSelectionPage = () => {
                                 {row.left.map((seat) => (
                                   <button
                                     key={seat.id}
-                                    className={`w-10 h-10 text-[#a8b5c0]  rounded-t-md flex items-center !bg-gray-200 hover:!bg-gray-300 justify-center text-sm font-medium ${getSeatStatus(seat.id) === "available"
+                                    className={`w-10 h-10 text-[#a8b5c0]  rounded-t-md flex items-center justify-center text-sm font-medium ${getSeatStatus(seat.id) === "available"
                                       ? "!bg-gray-200 hover:!bg-gray-300"
                                       : getSeatStatus(seat.id) === "selected"
                                         ? "!bg-green-500 text-white"
@@ -352,10 +349,10 @@ const SeatSelectionPage = () => {
                         ? new Date(`1970-01-01T${busDetails.time}:00`).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })
                         : "N/A"}</span>
                     </div>
-                    {/* <div className="flex justify-between">
+                    <div className="flex justify-between">
                       <span className="font-medium">Journey Date</span>
-                      <span>{selectedDate || "N/A"}</span>
-                    </div> */}
+                      <span>{new Date(date).toDateString() || "N/A"}</span>
+                    </div>
                     <div className="flex justify-between">
                       <span className="font-medium">Seat Type</span>
                       <span>{busDetails.seatType || "N/A"}</span>

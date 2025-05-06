@@ -202,16 +202,16 @@ const Navbar = () => {
                     <div className="md:hidden flex items-center">
                         <button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            className="inline-flex items-center justify-center p-2 text-gray-700 hover:text-blue-600"
+                            className="inline-flex items-center !p-[6px_15px] justify-center font-semibold hover:text-blue-400 outline-0 border-0"
                         >
-                            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                            {isMenuOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
                         </button>
                     </div>
                 </div>
             </div>
 
             {isMenuOpen && (
-                <div className="md:hidden px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <div className="md:hidden px-2 pt-2 pb-3 flex flex-col space-y-1 sm:px-3">
                     {commonLinks}
                     {isLoggedIn ? (
                         <>

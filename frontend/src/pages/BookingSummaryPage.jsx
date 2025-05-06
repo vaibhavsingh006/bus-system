@@ -86,12 +86,13 @@
 
 
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import { User, Mail, Phone, AlertCircle } from "lucide-react"
 import { calculateArrival } from '../utils/calculateArrival';
+import PassengerForm from "../components/PassengerForm"
 
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -100,10 +101,11 @@ const BookingSummaryPage = () => {
   const location = useLocation()
   const navigate = useNavigate()
 
-  const { busDetails, selectedSeats, totalPrice } = location.state || {}
+  const { busDetails, selectedSeats, totalPrice, travelDate } = location.state || {}
   const busId = busDetails?._id || "123456"
 
   const [formData, setFormData] = useState({ name: "", email: "", phone: "" })
+  const [passengerList, setPassengerList] = useState([]);
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
 
@@ -111,6 +113,38 @@ const BookingSummaryPage = () => {
   const [otpVerified, setOtpVerified] = useState(false)
   const [otp, setOtp] = useState("")
   const [otpStatus, setOtpStatus] = useState("")
+  const [otpButton, setOtpButton] = useState(false)
+  const [sendingOtp, setSendingOtp] = useState(false);
+  const [resendAvailable, setResendAvailable] = useState(false);
+  const [otpTimer, setOtpTimer] = useState(30);
+  const [otpSentOnce, setOtpSentOnce] = useState(false);
+
+  useEffect(() => {
+    let interval;
+    if (otpSentOnce && !resendAvailable) {
+      interval = setInterval(() => {
+        setOtpTimer((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            setResendAvailable(true);
+            return 30;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [otpSentOnce, resendAvailable]);
+
+  const handleResetOtp = () => {
+    setOtp("");
+    setOtpSentOnce(false);
+    setResendAvailable(false);
+    setOtpTimer(30);
+    setOtpStatus("");
+    setOtpSent(false);
+    setOtpVerified(false);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -135,6 +169,8 @@ const BookingSummaryPage = () => {
     }
 
     try {
+      setSendingOtp(true);
+      setOtpStatus("");
       const response = await fetch(`${API_URL}/auto/send-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -143,14 +179,19 @@ const BookingSummaryPage = () => {
       })
 
       const data = await response.json()
+      console.log(data, "send otp hu")
       if (response.ok) {
         setOtpSent(true)
+        setOtpSentOnce(true)
         setOtpStatus("OTP sent to your email.")
+        setOtpTimer(30);
       } else {
         setOtpStatus(data.message || "Failed to send OTP.")
       }
     } catch (error) {
       setOtpStatus("Server error while sending OTP.")
+    } finally {
+      setSendingOtp(false);
     }
   }
 
@@ -200,7 +241,9 @@ const BookingSummaryPage = () => {
           busId,
           selectedSeats,
           passengerDetails: formData,
+          passengerList,
           totalAmount: Number(totalPrice) + 5,
+          travelDate
         }),
       })
 
@@ -213,6 +256,7 @@ const BookingSummaryPage = () => {
             selectedSeats,
             totalPrice,
             passengerDetails: formData,
+            travelDate
           },
         })
       } else {
@@ -224,6 +268,13 @@ const BookingSummaryPage = () => {
       setLoading(false)
     }
   }
+
+  const handlePassengerSubmit = (passengerData) => {
+    console.log('All Passenger Details:', passengerData);
+    setOtpButton(true)
+    // 👉 Save in state, and then trigger OTP request
+    setPassengerList(passengerData)
+  };
 
 
   return (
@@ -245,50 +296,6 @@ const BookingSummaryPage = () => {
             <div className="p-6">
               <h2 className="text-xl font-bold mb-4 text-gray-700">Trip Details</h2>
 
-              {/* <div className="space-y-4 mb-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-500">Bus</p>
-                    <p className="font-medium text-gray-700">{busDetails.name}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Operator</p>
-                    <p className="font-medium text-gray-700">{busDetails.operator}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">From</p>
-                    <p className="font-medium text-gray-700">{busDetails.from}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">To</p>
-                    <p className="font-medium text-gray-700">{busDetails.to}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Date</p>
-                    <p className="font-medium text-gray-700">{busDetails.date}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Time</p>
-                    <p className="text-gray-700 font-medium">
-                      {new Date(`1970-01-01T${busDetails.time}:00`).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t">
-                  <p className="text-sm text-gray-500 mb-2">Selected Seats</p>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedSeats.map((seat) => (
-                      <span
-                        key={seat}
-                        className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
-                      >
-                        Seat {seat}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div> */}
               <div className="space-y-4 text-sm text-gray-700">
                 {/* Basic Info */}
                 <div className="grid grid-cols-2 gap-4">
@@ -319,6 +326,10 @@ const BookingSummaryPage = () => {
                   <div>
                     <p className="text-gray-500">To</p>
                     <p className="font-medium">{busDetails.to}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500">Date</p>
+                    <p className="font-medium">{travelDate}</p>
                   </div>
                   <div>
                     <p className="text-gray-500">Departure</p>
@@ -442,17 +453,42 @@ const BookingSummaryPage = () => {
                   </div>
                 </div>
 
+                <div className="py-4">
+                  <PassengerForm selectedSeats={selectedSeats} onSubmit={handlePassengerSubmit} />
+                </div>
+
 
                 {/* OTP Button */}
                 <div className="space-y-2">
-                  {!otpSent && (
+                  {!otpSent && otpButton && (
                     <button
                       type="button"
                       onClick={handleSendOtp}
                       className="text-white hover:underline text-sm"
                     >
-                      Send OTP to Email
+                      {sendingOtp ? "Sending OTP..." : "Send OTP"}
                     </button>
+                  )}
+                  {otpSentOnce && (
+                    <div className="mt-2 text-sm text-gray-600">
+                      {resendAvailable ? (
+                        <button
+                          type="button"
+                          className="text-blue-600 mr-4 underline"
+                          onClick={handleSendOtp}
+                        >
+                          {sendingOtp ? "Sending..." : "Resend OTP"}
+                        </button>
+                      ) : (
+                        <span>You can resend OTP in {otpTimer}s</span>
+                      )}
+                      <button
+                        className="text-red-500 underline ml-4"
+                        onClick={handleResetOtp}
+                      >
+                        Reset
+                      </button>
+                    </div>
                   )}
                   {otpSent && !otpVerified && (
                     <div className="space-y-2">

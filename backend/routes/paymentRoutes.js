@@ -38,7 +38,8 @@ router.post("/pay", async (req, res) => {
 
         // 3. Update booking paymentStatus
         booking.paymentStatus = "Completed";
-        bus.bookedSeats = booking.seatNumbers;
+        // bus.bookedSeats = booking.seatNumbers;
+        bus.bookedSeats = [...new Set([...bus.bookedSeats, ...booking.seatNumbers])];
         user.confirmPayments.push(savedPayment._id);
         await user.save();
 

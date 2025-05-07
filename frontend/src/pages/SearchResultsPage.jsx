@@ -14,24 +14,25 @@ const SearchResultsPage = () => {
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState("departureTime");
   const [filterAmenities, setFilterAmenities] = useState([]);
+  const [pDate, setPDate] = useState('');
 
   // Get search params from location state or URL params
+  const currentDate = new Date().toISOString().split("T")[0];
   const searchParams = location.state || {
     from: new URLSearchParams(location.search).get("from") || "",
     to: new URLSearchParams(location.search).get("to") || "",
-    date: new URLSearchParams(location.search).get("date") || "",
+    date: new URLSearchParams(location.search).get("date") || currentDate,
   };
+
+  if (!searchParams.date) {
+    searchParams.date = currentDate
+  }
 
   useEffect(() => {
     const fetchBuses = async () => {
       try {
         setLoading(true);
 
-        // Build the query dynamically
-        // const queryParams = [];
-        // if (searchParams.from) queryParams.push(`from=${encodeURIComponent(searchParams.from)}`);
-        // if (searchParams.to) queryParams.push(`to=${encodeURIComponent(searchParams.to)}`);
-        // if (searchParams.date) queryParams.push(`date=${encodeURIComponent(searchParams.date)}`);
         const queryParams = [];
         if (searchParams.from) queryParams.push(`from=${encodeURIComponent(searchParams.from.trim())}`);
         if (searchParams.to) queryParams.push(`to=${encodeURIComponent(searchParams.to.trim())}`);
@@ -41,8 +42,6 @@ const SearchResultsPage = () => {
 
 
         const response = await fetch(
-          // `${API_URL}/bus/search-buses?from=${encodeURIComponent(searchParams.from)}&to=${encodeURIComponent(searchParams.to)}&date=${encodeURIComponent(searchParams.date)}`, {
-
           `${API_URL}/bus/search-buses${queryString}`, {
           method: "GET",
           headers: {
@@ -55,7 +54,8 @@ const SearchResultsPage = () => {
         const data = await response.json();
         console.log(data, 'response here');
         console.log(queryString, 'quary here');
-        setBuses(data);
+        setBuses(data?.buses);
+        setPDate(data?.searchedDate)
       } catch (error) {
         console.error("Failed to fetch buses", error);
         setBuses([]); // Optional fallback
@@ -106,8 +106,8 @@ const SearchResultsPage = () => {
       ? buses.filter((bus) => filterAmenities.every((amenity) => bus.amenities.includes(amenity)))
       : buses;
 
-  const handleSelectSeats = (busId) => {
-    navigate(`/seat-selection/${busId}?date=${searchParams.date}`);
+  const handleSelectSeats = (busId, date) => {
+    navigate(`/seat-selection/${busId}?date=${date}`);
   };
 
   function calculateArrival(startTime = "00:00", duration = "0h 0m") {
@@ -224,85 +224,97 @@ const SearchResultsPage = () => {
               ) : (
                 buses.length > 0 ? (
                   <div className="space-y-4">
-                    {filteredBuses && filteredBuses?.map((bus) => (
-                      <div
-                        key={bus._id}
-                        className="border border-green-200 rounded-xl p-5 shadow-sm bg-white transition hover:shadow-md"
-                      >
-                        {/* Top Header */}
-                        <div className="flex flex-col md:flex-row justify-between items-start gap-3">
-                          <div className="flex items-center gap-3">
-                            <h2 className="text-lg font-bold text-green-600">{bus.name || "Bus Name"}</h2>
-                            {bus.price <= 500 && (
-                              <span className="bg-green-100 text-green-700 text-xs font-medium px-2 py-0.5 rounded-full">
-                                Cheapest
+                    {filteredBuses && filteredBuses?.map((bus) => {
+                      const isToday = new Date(searchParams.date).toDateString() === new Date().toDateString();
+                      const dayLabel = isToday
+                        ? null
+                        : new Date(searchParams.date).toLocaleDateString(undefined, { weekday: "long" });
+                      return (
+                        <div
+                          key={bus._id}
+                          className="border border-green-200 rounded-xl p-5 shadow-sm bg-white transition hover:shadow-md"
+                        >
+                          {/* Top Header */}
+                          <div className="flex flex-col md:flex-row justify-between items-start gap-3">
+                            <div className="flex items-center gap-3">
+                              <h2 className="text-lg font-bold text-green-600">{bus.name || "Bus Name"}</h2>
+                              {bus.price <= 500 && (
+                                <span className="bg-green-100 text-green-700 text-xs font-medium px-2 py-0.5 rounded-full">
+                                  Cheapest
+                                </span>
+                              )}
+                              {dayLabel && (
+                                <span className="bg-yellow-200 text-yellow-800 text-xs font-semibold px-2 py-1 rounded-full">
+                                  {dayLabel}
+                                </span>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-1 text-xl font-semibold text-gray-800">
+                              <BadgeIndianRupee className="w-5 h-5" />
+                              {bus.price ?? "N/A"}
+                            </div>
+                          </div>
+
+                          {/* Time and Route */}
+                          <div className="flex md:flex-row justify-between items-center mt-4 text-sm text-gray-700">
+                            <div className="text-center md:text-left">
+                              <div className="text-base font-medium">
+                                {bus.time
+                                  ? new Date(`1970-01-01T${bus.time}:00`).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })
+                                  : "N/A"}
+                              </div>
+                              <div className="text-xs font-semibold">{bus.from || "From"}</div>
+                            </div>
+
+                            <div className="flex items-center gap-1 text-gray-500 text-xs my-2 md:my-0">
+                              <Clock3 className="w-4 h-4" />
+                              <span>{bus.duration || "0h 0m"}</span>
+                            </div>
+
+                            <div className="text-center md:text-right">
+                              <div className="text-base font-medium">
+                                {calculateArrival(bus.time, bus.duration)}
+                              </div>
+                              <div className="text-xs font-semibold">{bus.to || "To"}</div>
+                            </div>
+                          </div>
+
+                          {/* Extra Info */}
+                          <div className="grid grid-cols-2 sm:mt-4 sm:grid-cols-4 md:grid-cols-5 text-xs text-gray-600 mt-6 gap-2">
+                            <div className="flex items-center gap-1">
+                              <Users2 className="w-4 h-4" />
+                              {bus.seats ?? 0} Seats
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <BusFront className="w-4 h-4" />
+                              {bus.availableSeats ?? 0} Available
+                            </div>
+                            <div>{bus.seatType || "N/A"}</div>
+                            <div>{bus.busNumber || "N/A"}</div>
+                            <div className="truncate">{(bus.amenities?.length > 0 ? bus.amenities.slice(0, 2).join(", ") + "..." : "Amenities")}</div>
+                          </div>
+
+                          {/* Footer */}
+                          <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-2">
+                            <div className="flex gap-2 items-start flex-wrap text-xs text-gray-500">
+                              <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
+                                <CalendarDays className="w-3.5 h-3.5" />
+                                {bus.daysOfOperation.length === 7 ? "Daily" : bus.daysOfOperation?.join(", ") || "Daily"}
                               </span>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-1 text-xl font-semibold text-gray-800">
-                            <BadgeIndianRupee className="w-5 h-5" />
-                            {bus.price ?? "N/A"}
-                          </div>
-                        </div>
-
-                        {/* Time and Route */}
-                        <div className="flex md:flex-row justify-between items-center mt-4 text-sm text-gray-700">
-                          <div className="text-center md:text-left">
-                            <div className="text-base font-medium">
-                              {bus.time
-                                ? new Date(`1970-01-01T${bus.time}:00`).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })
-                                : "N/A"}
+                              <span className="bg-gray-100 px-2 py-1 rounded-full">One-way</span>
+                              <span className="bg-gray-100 px-2 py-1 rounded-full">Direct</span>
                             </div>
-                            <div className="text-xs font-semibold">{bus.from || "From"}</div>
-                          </div>
-
-                          <div className="flex items-center gap-1 text-gray-500 text-xs my-2 md:my-0">
-                            <Clock3 className="w-4 h-4" />
-                            <span>{bus.duration || "0h 0m"}</span>
-                          </div>
-
-                          <div className="text-center md:text-right">
-                            <div className="text-base font-medium">
-                              {calculateArrival(bus.time, bus.duration)}
-                            </div>
-                            <div className="text-xs font-semibold">{bus.to || "To"}</div>
+                            <button
+                              onClick={() => handleSelectSeats(bus._id, pDate)}
+                              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full sm:w-auto"
+                            >
+                              Select Seats
+                            </button>
                           </div>
                         </div>
-
-                        {/* Extra Info */}
-                        <div className="grid grid-cols-2 sm:mt-4 sm:grid-cols-4 md:grid-cols-5 text-xs text-gray-600 mt-6 gap-2">
-                          <div className="flex items-center gap-1">
-                            <Users2 className="w-4 h-4" />
-                            {bus.seats ?? 0} Seats
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <BusFront className="w-4 h-4" />
-                            {bus.availableSeats ?? 0} Available
-                          </div>
-                          <div>{bus.seatType || "N/A"}</div>
-                          <div>{bus.busNumber || "N/A"}</div>
-                          <div className="truncate">{(bus.amenities?.length > 0 ? bus.amenities.slice(0, 2).join(", ") + "..." : "Amenities")}</div>
-                        </div>
-
-                        {/* Footer */}
-                        <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-2">
-                          <div className="flex gap-2 items-start flex-wrap text-xs text-gray-500">
-                            <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
-                              <CalendarDays className="w-3.5 h-3.5" />
-                              {bus.daysOfOperation.length === 7 ? "Daily" : bus.daysOfOperation?.join(", ") || "Daily"}
-                            </span>
-                            <span className="bg-gray-100 px-2 py-1 rounded-full">One-way</span>
-                            <span className="bg-gray-100 px-2 py-1 rounded-full">Direct</span>
-                          </div>
-                          <button
-                            onClick={() => handleSelectSeats(bus._id)}
-                            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full sm:w-auto"
-                          >
-                            Select Seats
-                          </button>
-                        </div>
-                      </div>
-                    ))}
+                      )
+                    }
+                    )}
                   </div>) : (<p>No buses found.</p>)
               )}
             </div>

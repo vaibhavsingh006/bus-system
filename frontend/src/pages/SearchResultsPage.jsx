@@ -15,6 +15,7 @@ const SearchResultsPage = () => {
   const [sortBy, setSortBy] = useState("departureTime");
   const [filterAmenities, setFilterAmenities] = useState([]);
   const [pDate, setPDate] = useState('');
+  const [pDay, setPDay] = useState('');
 
   // Get search params from location state or URL params
   const currentDate = new Date().toISOString().split("T")[0];
@@ -56,6 +57,7 @@ const SearchResultsPage = () => {
         console.log(queryString, 'quary here');
         setBuses(data?.buses);
         setPDate(data?.searchedDate)
+        setPDay(data?.searchedDay)
       } catch (error) {
         console.error("Failed to fetch buses", error);
         setBuses([]); // Optional fallback
@@ -196,7 +198,7 @@ const SearchResultsPage = () => {
               <div className="bg-white p-4 rounded-lg shadow-sm mb-4">
                 <div className="flex flex-col sm:flex-row justify-between items-center">
                   <p className="text-gray-700 mb-2 sm:mb-0">
-                    <span className="font-semibold">{filteredBuses.length}</span> buses found
+                    <span className="font-semibold">{filteredBuses?.length}</span> buses found
                   </p>
                   <div className="flex items-center">
                     <label htmlFor="sort" className="mr-2 text-sm text-gray-700 font-semibold">
@@ -225,10 +227,9 @@ const SearchResultsPage = () => {
                 buses.length > 0 ? (
                   <div className="space-y-4">
                     {filteredBuses && filteredBuses?.map((bus) => {
-                      const isToday = new Date(searchParams.date).toDateString() === new Date().toDateString();
-                      const dayLabel = isToday
-                        ? null
-                        : new Date(searchParams.date).toLocaleDateString(undefined, { weekday: "long" });
+                      const userSelectedDay = new Date(searchParams.date).toLocaleDateString(undefined, { weekday: "long" });
+                      const actualSearchedDay = pDay; // get this from backend response
+                      const showDayLabel = userSelectedDay !== actualSearchedDay;
                       return (
                         <div
                           key={bus._id}
@@ -243,9 +244,9 @@ const SearchResultsPage = () => {
                                   Cheapest
                                 </span>
                               )}
-                              {dayLabel && (
+                              {showDayLabel && (
                                 <span className="bg-yellow-200 text-yellow-800 text-xs font-semibold px-2 py-1 rounded-full">
-                                  {dayLabel}
+                                  {actualSearchedDay}
                                 </span>
                               )}
                             </div>

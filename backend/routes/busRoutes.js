@@ -107,23 +107,42 @@ router.get("/search-buses", async (req, res) => {
             console.log(`No buses found on ${dayOfWeek}. Searching next 7 days...`);
 
             const next7Days = getNext7Days();
+            // for (let nextDay of next7Days) {
+            //     if (nextDay === dayOfWeek) continue;
+
+            //     const fallbackQuery = {
+            //         ...baseQuery,
+            //         daysOfOperation: { $in: [nextDay] },
+            //     };
+
+            //     buses = await Bus.find(fallbackQuery);
+            //     if (buses.length > 0) {
+            //         return res.json({
+            //             buses,
+            //             searchedDay: nextDay,
+            //             message: `No buses found on ${dayOfWeek}. Showing buses for ${nextDay}`,
+            //         });
+            //     }
+            // }
             for (let nextDay of next7Days) {
-                if (nextDay === dayOfWeek) continue;
+                if (nextDay.day === dayOfWeek) continue;
 
                 const fallbackQuery = {
                     ...baseQuery,
-                    daysOfOperation: { $in: [nextDay] },
+                    daysOfOperation: { $in: [nextDay.day] },
                 };
 
                 buses = await Bus.find(fallbackQuery);
                 if (buses.length > 0) {
                     return res.json({
                         buses,
-                        searchedDay: nextDay,
-                        message: `No buses found on ${dayOfWeek}. Showing buses for ${nextDay}`,
+                        searchedDay: nextDay.day,
+                        searchedDate: nextDay.date,
+                        message: `No buses found on ${dayOfWeek}. Showing buses for ${nextDay.day}`,
                     });
                 }
             }
+
 
             return res.json({
                 buses: [],

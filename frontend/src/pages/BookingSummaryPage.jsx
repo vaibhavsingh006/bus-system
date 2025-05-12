@@ -520,7 +520,7 @@ const BookingSummaryPage = () => {
                 <div className="space-y-2 mb-6">
                   <div className="flex justify-between text-gray-700">
                     <span className="text-gray-600">Price per seat</span>
-                    <span>${busDetails.price}</span>
+                    <span>₹{busDetails.price}</span>
                   </div>
                   <div className="flex justify-between text-gray-700">
                     <span className="text-gray-600">Number of seats</span>
@@ -528,11 +528,11 @@ const BookingSummaryPage = () => {
                   </div>
                   <div className="flex justify-between text-gray-700">
                     <span className="text-gray-600">Booking fee</span>
-                    <span>$5.00</span>
+                    <span>₹5.00</span>
                   </div>
                   <div className="pt-2 border-t flex justify-between text-gray-700 font-bold text-lg">
                     <span>Total</span>
-                    <span>${totalPrice + 5}</span>
+                    <span>₹{totalPrice + 5}</span>
                   </div>
                 </div>
 

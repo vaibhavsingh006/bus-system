@@ -91,7 +91,7 @@ const FeaturedBuses = () => {
                                             </div>
                                         </div>
                                         <div className="flex justify-between items-center mt-4">
-                                            <div className="text-2xl font-bold text-blue-600">From ${bus.price}</div>
+                                            <div className="text-2xl font-bold text-blue-600">From ₹{bus.price}</div>
                                             <Link
                                                 to="/search-results"
                                                 state={{ from: bus.from, to: bus.to }}

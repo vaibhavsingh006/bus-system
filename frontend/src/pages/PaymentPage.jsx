@@ -294,7 +294,7 @@ const PaymentPage = () => {
 
                   <div className="pt-2 border-t flex justify-between font-bold text-gray-700">
                     <span>Total Amount</span>
-                    <span>${totalPrice + 5}</span>
+                    <span>₹{totalPrice + 5}</span>
                   </div>
                 </div>
 

@@ -1,101 +1,3 @@
-// import React, { useState } from 'react';
-
-// const PassengerForm = ({ selectedSeats, onSubmit }) => {
-//     const [currentIndex, setCurrentIndex] = useState(0);
-//     const [passengers, setPassengers] = useState(
-//         selectedSeats.map(seat => ({
-//             name: '',
-//             age: '',
-//             gender: '',
-//             seatNumber: seat,
-//         }))
-//     );
-
-//     const handleChange = (e) => {
-//         const { name, value } = e.target;
-//         const updated = [...passengers];
-//         updated[currentIndex][name] = value;
-//         setPassengers(updated);
-//     };
-
-//     const handleNext = () => {
-//         if (currentIndex < selectedSeats.length - 1) {
-//             setCurrentIndex(currentIndex + 1);
-//         } else {
-//             onSubmit(passengers); // Final submit before OTP
-//         }
-//     };
-
-//     return (
-//         <div className="max-w-md mx-auto bg-white p-6 rounded-xl shadow-md">
-//             <h2 className="text-xl font-semibold mb-4">Passenger {currentIndex + 1} Details</h2>
-
-//             <form className="space-y-4">
-//                 <div>
-//                     <label className="block font-medium">Name</label>
-//                     <input
-//                         type="text"
-//                         name="name"
-//                         value={passengers[currentIndex].name}
-//                         onChange={handleChange}
-//                         className="w-full border p-2 rounded"
-//                         required
-//                     />
-//                 </div>
-
-//                 <div>
-//                     <label className="block font-medium">Age</label>
-//                     <input
-//                         type="number"
-//                         name="age"
-//                         value={passengers[currentIndex].age}
-//                         onChange={handleChange}
-//                         className="w-full border p-2 rounded"
-//                         required
-//                     />
-//                 </div>
-
-//                 <div>
-//                     <label className="block font-medium">Gender</label>
-//                     <select
-//                         name="gender"
-//                         value={passengers[currentIndex].gender}
-//                         onChange={handleChange}
-//                         className="w-full border p-2 rounded"
-//                         required
-//                     >
-//                         <option value="">Select</option>
-//                         <option value="Male">Male</option>
-//                         <option value="Female">Female</option>
-//                         <option value="Other">Other</option>
-//                     </select>
-//                 </div>
-
-//                 <div>
-//                     <label className="block font-medium">Seat Number</label>
-//                     <input
-//                         type="text"
-//                         value={passengers[currentIndex].seatNumber}
-//                         disabled
-//                         className="w-full border p-2 rounded bg-gray-100"
-//                     />
-//                 </div>
-
-//                 <button
-//                     type="button"
-//                     onClick={handleNext}
-//                     className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-//                 >
-//                     {currentIndex === selectedSeats.length - 1 ? 'Submit' : 'Next'}
-//                 </button>
-//             </form>
-//         </div>
-//     );
-// };
-
-// export default PassengerForm;
-
-
 import React, { useState } from 'react';
 import { CheckCircle } from 'lucide-react'
 
@@ -149,8 +51,8 @@ const PassengerForm = ({ selectedSeats, onSubmit }) => {
     }
 
     return (
-        <div className="max-w-md mx-auto bg-gray-300 p-6 rounded-xl shadow-md">
-            <h2 className="text-xl font-semibold mb-4">
+        <div className="max-w-md mx-auto bg-gray-100 p-6 rounded-xl shadow-md">
+            <h2 className="text-xl font-semibold mb-4 text-gray-700">
                 Passenger {currentIndex + 1} Details
             </h2>
 
@@ -208,7 +110,7 @@ const PassengerForm = ({ selectedSeats, onSubmit }) => {
                 <button
                     type="button"
                     onClick={handleNext}
-                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    className="bg-blue-600 text-white px-4 py-2 rounded font-semibold hover:bg-blue-700"
                 >
                     {currentIndex === selectedSeats.length - 1 ? 'Submit' : 'Next'}
                 </button>

@@ -77,8 +77,8 @@ const FeaturedBuses = () => {
                                     <div className="p-6">
                                         <h3 className="text-xl font-bold mb-2 text-gray-700">{bus.name}</h3>
                                         <div className="flex items-center mb-4">
-                                            <Star className="h-5 w-5 text-yellow-500 fill-current" />
-                                            <span className="ml-1 text-gray-700">{bus.rating}/5</span>
+
+                                            <span className=" font-semibold text-gray-700">{bus.from} - {bus.to}</span>
                                         </div>
                                         <div className="mb-4">
                                             <h4 className="text-sm font-semibold text-gray-700 mb-2">Amenities:</h4>
@@ -95,7 +95,7 @@ const FeaturedBuses = () => {
                                             <Link
                                                 to="/search-results"
                                                 state={{ from: bus.from, to: bus.to }}
-                                                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors duration-300"
+                                                className="px-4 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition-colors duration-300"
                                             >
                                                 view details
                                             </Link>

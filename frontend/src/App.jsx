@@ -13,6 +13,7 @@ import LoginPage from './pages/LoginPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import AddBusForm from './pages/AddBusForm';
 import UpdateBus from './pages/UpdateBus';
+import Userdd from './pages/User';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Route path="/adminlogin" element={<AdminLoginPage />} />
         <Route path="/addbus" element={<AddBusForm />} />
         <Route path="/updatebus/:id" element={<UpdateBus />} />
+        <Route path="/user" element={<Userdd />} />
       </Routes>
     </Router>
   )

@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require("../models/user.js")
+const Booking = require("../models/booking.js")
 const authMiddleware = require('../middlewares/authMiddleware.js')
 
 
@@ -92,6 +93,18 @@ router.get("/profile", authMiddleware, async (req, res) => {
         if (!user) return res.status(404).json({ message: "User not found" });
 
         res.json(user);
+    } catch (error) {
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+router.get("/allbooking", authMiddleware, async (req, res) => {
+    try {
+        const booking = await Booking.find({ user: req.user.id }).populate({ path: "bus" });
+
+        if (!booking) return res.status(404).json({ message: "booking not found" });
+
+        res.json(booking);
     } catch (error) {
         res.status(500).json({ message: "Server error" });
     }

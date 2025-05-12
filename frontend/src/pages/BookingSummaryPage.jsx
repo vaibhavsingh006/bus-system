@@ -464,7 +464,7 @@ const BookingSummaryPage = () => {
                     <button
                       type="button"
                       onClick={handleSendOtp}
-                      className="text-white hover:underline text-sm"
+                      className="text-white bg-blue-600 font-semibold px-4 py-2 rounded hover:underline text-sm"
                     >
                       {sendingOtp ? "Sending OTP..." : "Send OTP"}
                     </button>
@@ -474,7 +474,7 @@ const BookingSummaryPage = () => {
                       {resendAvailable ? (
                         <button
                           type="button"
-                          className="text-blue-600 mr-4 underline"
+                          className="text-white bg-gray-300 px-4 py-2 font-semibold rounded mr-4 hover:underline"
                           onClick={handleSendOtp}
                         >
                           {sendingOtp ? "Sending..." : "Resend OTP"}
@@ -483,7 +483,7 @@ const BookingSummaryPage = () => {
                         <span>You can resend OTP in {otpTimer}s</span>
                       )}
                       <button
-                        className="text-red-500 underline ml-4"
+                        className="text-white bg-red-500 px-4 py-2 rounded font-semibold hover:underline ml-4"
                         onClick={handleResetOtp}
                       >
                         Reset
@@ -502,7 +502,7 @@ const BookingSummaryPage = () => {
                       <button
                         type="button"
                         onClick={handleVerifyOtp}
-                        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm"
+                        className="bg-green-600 font-semibold text-white px-4 py-2 rounded hover:bg-green-700 text-sm"
                       >
                         Verify OTP
                       </button>
@@ -559,7 +559,7 @@ const BookingSummaryPage = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  className={`w-full py-3 text-white font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${loading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}`}
                 >
                   {loading ? "Processing..." : "Proceed to Payment"}
                 </button>

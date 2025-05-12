@@ -185,7 +185,7 @@ const PaymentPage = () => {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            amount: totalPrice,
+            amount: totalPrice + 5,
             bookingId: id,
             userId: bookingData.passengerDetails._id
           }),
@@ -294,7 +294,7 @@ const PaymentPage = () => {
 
                   <div className="pt-2 border-t flex justify-between font-bold text-gray-700">
                     <span>Total Amount</span>
-                    <span>${totalPrice}</span>
+                    <span>${totalPrice + 5}</span>
                   </div>
                 </div>
 

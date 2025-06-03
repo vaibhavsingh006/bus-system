@@ -33,7 +33,7 @@ const passengerSchema = new mongoose.Schema({
     booking: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Booking',
-        required: false, // Optional, if booking is created after passenger is saved
+        required: false,
     },
 }, {
     timestamps: true

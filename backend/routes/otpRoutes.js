@@ -25,9 +25,12 @@ router.post("/send-otp", async (req, res) => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
 
     try {
+        console.log("Sending OTP to:", email);
         if (isProduction) {
+            console.log("Production mode - using Redis");
             await redisClient.setex(`otp:${email}`, 300, otp); // expire in 5 mins
         } else {
+            console.log("Dev mode - using local Map");
             otpMap.set(email, otp); // store locally
         }
 

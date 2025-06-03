@@ -202,7 +202,7 @@ const Navbar = () => {
                     <div className="md:hidden flex items-center">
                         <button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            className="inline-flex items-center !p-[6px_15px] justify-center font-semibold hover:text-blue-400 outline-0 border-0"
+                            className="inline-flex text-gray-600 items-center !p-[6px_15px] justify-center font-semibold hover:text-blue-400 outline-0 border-0"
                         >
                             {isMenuOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
                         </button>

@@ -1,22 +1,56 @@
-// routes/otpRoutes.js
+
+
+// // routes/otpRoutes.js
+
 const express = require("express");
 const router = express.Router();
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 const sendOTPEmail = require("../utils/mailer");
-const User = require('../models/user');
-const Redis = require('ioredis');
+const User = require("../models/user");
+// const fetch = require("node-fetch");
+const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
-const isProduction = process.env.NODE_ENV === 'production';
 
-let redisClient;
-const otpMap = new Map(); // for local fallback
+const isProduction = process.env.NODE_ENV === "production";
 
-if (isProduction) {
-    redisClient = new Redis(process.env.REDIS_URL);
-    redisClient.on('connect', () => console.log('✅ Connected to Redis'));
-    redisClient.on('error', err => console.error('❌ Redis error:', err));
-}
+const otpMap = new Map(); // fallback local store for dev
 
+// Upstash REST API helper functions
+const setOtp = async (email, otp) => {
+    const url = `${process.env.UPSTASH_REDIS_REST_URL}/set/otp:${email}/${otp}?EX=300`; // expire in 5 mins
+    const res = await fetch(url, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`,
+        },
+    });
+    const data = await res.json();
+    return data;
+};
+
+const getOtp = async (email) => {
+    const url = `${process.env.UPSTASH_REDIS_REST_URL}/get/otp:${email}`;
+    const res = await fetch(url, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`,
+        },
+    });
+    const data = await res.json();
+    return data.result;
+};
+
+const delOtp = async (email) => {
+    const url = `${process.env.UPSTASH_REDIS_REST_URL}/del/otp:${email}`;
+    await fetch(url, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`,
+        },
+    });
+};
+
+// Send OTP route
 router.post("/send-otp", async (req, res) => {
     const { email } = req.body;
 
@@ -27,11 +61,11 @@ router.post("/send-otp", async (req, res) => {
     try {
         console.log("Sending OTP to:", email);
         if (isProduction) {
-            console.log("Production mode - using Redis");
-            await redisClient.setex(`otp:${email}`, 300, otp); // expire in 5 mins
+            console.log("Production mode - using Upstash REST API");
+            await setOtp(email, otp);
         } else {
             console.log("Dev mode - using local Map");
-            otpMap.set(email, otp); // store locally
+            otpMap.set(email, otp);
         }
 
         await sendOTPEmail(email, otp);
@@ -42,6 +76,7 @@ router.post("/send-otp", async (req, res) => {
     }
 });
 
+// Verify OTP route
 router.post("/verify-otp", async (req, res) => {
     const { email, otp } = req.body;
 
@@ -53,7 +88,7 @@ router.post("/verify-otp", async (req, res) => {
         let validOTP;
 
         if (isProduction) {
-            validOTP = await redisClient.get(`otp:${email}`);
+            validOTP = await getOtp(email);
         } else {
             validOTP = otpMap.get(email);
         }
@@ -61,9 +96,9 @@ router.post("/verify-otp", async (req, res) => {
         console.log({ email, otp, validOTP });
 
         if (validOTP === otp) {
-            // ✅ Remove OTP after verification
+            // Remove OTP after verification
             if (isProduction) {
-                await redisClient.del(`otp:${email}`);
+                await delOtp(email);
             } else {
                 otpMap.delete(email);
             }
@@ -72,54 +107,93 @@ router.post("/verify-otp", async (req, res) => {
         } else {
             return res.status(400).json({ verified: false, message: "Invalid OTP" });
         }
-
     } catch (err) {
         console.error("OTP verification failed:", err);
         return res.status(500).json({ message: "OTP verification error" });
     }
 });
 
+module.exports = router;
 
+
+
+// const express = require("express");
+// const router = express.Router();
+// const jwt = require('jsonwebtoken');
+// const sendOTPEmail = require("../utils/mailer");
+// const User = require('../models/user');
+// const Redis = require('ioredis');
+
+// const isProduction = process.env.NODE_ENV === 'production';
+
+// let redisClient;
+// const otpMap = new Map(); // for local fallback
+
+// if (isProduction) {
+//     redisClient = new Redis(process.env.REDIS_URL);
+//     redisClient.on('connect', () => console.log('✅ Connected to Redis'));
+//     redisClient.on('error', err => console.error('❌ Redis error:', err));
+// }
+
+// router.post("/send-otp", async (req, res) => {
+//     const { email } = req.body;
+
+//     if (!email) return res.status(400).json({ message: "Email is required" });
+
+//     const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
+
+//     try {
+//         console.log("Sending OTP to:", email);
+//         if (isProduction) {
+//             console.log("Production mode - using Redis");
+//             await redisClient.setex(`otp:${email}`, 300, otp); // expire in 5 mins
+//         } else {
+//             console.log("Dev mode - using local Map");
+//             otpMap.set(email, otp); // store locally
+//         }
+
+//         await sendOTPEmail(email, otp);
+//         res.json({ message: "OTP sent to email" });
+//     } catch (err) {
+//         console.error("OTP sending failed:", err);
+//         res.status(500).json({ message: "OTP send failed" });
+//     }
+// });
 
 // router.post("/verify-otp", async (req, res) => {
 //     const { email, otp } = req.body;
 
-//     const user = await User.findOne({ email });
-//     console.log(user);
-//     if (!user) return res.status(404).json({ verified: false, message: "User not found" });
-
-//     let validOTP;
-//     try {
-//         validOTP = isProduction
-//             ? await redisClient.get(`otp:${email}`)
-//             : otpMap.get(email);
-//     } catch (err) {
-//         return res.status(500).json({ message: "OTP check failed" });
+//     if (!email || !otp) {
+//         return res.status(400).json({ message: "Email and OTP are required" });
 //     }
 
-//     console.log({ validOTP, otp, email });
+//     try {
+//         let validOTP;
 
-//     if (validOTP === otp) {
 //         if (isProduction) {
-//             await redisClient.del(`otp:${email}`);
+//             validOTP = await redisClient.get(`otp:${email}`);
 //         } else {
-//             otpMap.delete(email);
+//             validOTP = otpMap.get(email);
 //         }
 
-//         const token = jwt.sign({ email, id: user._id }, process.env.JWT_KEY);
+//         console.log({ email, otp, validOTP });
 
-//         res.cookie('token', token, {
-//             httpOnly: true,
-//             secure: isProduction,
-//             sameSite: isProduction ? 'None' : 'Lax',
-//             path: '/',
-//             domain: isProduction ? '.onrender.com' : undefined,
-//         });
+//         if (validOTP === otp) {
+//             // ✅ Remove OTP after verification
+//             if (isProduction) {
+//                 await redisClient.del(`otp:${email}`);
+//             } else {
+//                 otpMap.delete(email);
+//             }
 
-//         return res.json({ verified: true });
-//     } else {
-//         return res.status(400).json({ verified: false, message: "Invalid OTP" });
+//             return res.json({ verified: true });
+//         } else {
+//             return res.status(400).json({ verified: false, message: "Invalid OTP" });
+//         }
+
+//     } catch (err) {
+//         console.error("OTP verification failed:", err);
+//         return res.status(500).json({ message: "OTP verification error" });
 //     }
 // });
 
-module.exports = router;

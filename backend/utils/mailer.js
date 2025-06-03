@@ -38,8 +38,8 @@ const sendOTPEmail = async (to, otp) => {
                 <p>This OTP is valid for <strong>5 minutes</strong>.</p>
                 <p>If you didn't request this, you can safely ignore this email.</p>
                 <br />
-                <p style="font-size: 13px; color: #888;">Need help? Contact us at support@busbooking.com</p>
-                <p style="font-size: 12px; color: #ccc;">&copy; ${new Date().getFullYear()} BusBooking Inc.</p>
+                <p style="font-size: 13px; color: #888;">Need help? Contact us at vaibhavsinghchandel20@gmail.com</p>
+                <p style="font-size: 12px; color: #ccc;">&copy; ${new Date().getFullYear()} BusGo Inc.</p>
             </div>
         `,
     };

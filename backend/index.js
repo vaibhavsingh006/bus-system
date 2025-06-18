@@ -33,19 +33,30 @@ const allowedOrigins = [
     'https://bus-system-1.onrender.com', // Deployed frontend on Vercel
 ];
 
-
-app.use(cors({
-    origin: allowedOrigins,
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
-app.use(express.static(path.join(__dirname, "frontend/build")));
+// app.use(cors({
+//     origin: allowedOrigins,
+//     credentials: true,
+//     methods: ['GET', 'POST', 'PUT', 'DELETE'],
+//     allowedHeaders: ['Content-Type', 'Authorization'],
+// }));
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "frontend/build", "index.html"));
-});
 
 // Connect to MongoDB
 const PORT = process.env.PORT || 3000;

@@ -16,6 +16,10 @@ export default defineConfig({
       ],
     }),
   ],
+  build: {
+    outDir: "dist",
+  },
+  publicDir: "public", // make sure this is present (default value)
   base: "./",
 });
 

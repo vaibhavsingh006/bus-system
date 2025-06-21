@@ -163,7 +163,7 @@ app.use(cookieParser());
 // ];
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://bus-system-3j3o.vercel.app/",
+  "https://bus-system-3j3o.vercel.app",
 ];
 
 app.use(

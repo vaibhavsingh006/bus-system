@@ -157,9 +157,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 
+// const allowedOrigins = [
+//   "http://localhost:5173",
+//   "https://bus-system-1.onrender.com",
+// ];
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://bus-system-1.onrender.com",
+  "https://bus-system-3j3o.vercel.app/",
 ];
 
 app.use(

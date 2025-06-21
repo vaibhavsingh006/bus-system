@@ -163,6 +163,7 @@ app.use(cookieParser());
 // ];
 const allowedOrigins = [
   "http://localhost:5173",
+  "https://bus-system-1.onrender.com",
   "https://bus-system-3j3o.vercel.app", // Vercel production
   "https://bus-system-3j3o-git-master-vaibhavsingh006s-projects.vercel.app", // preview deployments
   "https://bus-system-3j3o-eyz733udj-vaibhavsingh006s-projects.vercel.app",

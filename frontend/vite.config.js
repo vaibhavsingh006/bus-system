@@ -23,4 +23,22 @@ export default defineConfig({
   base: "./",
 });
 
-// kjk
+// const { defineConfig } = require("vite");
+// const react = require("@vitejs/plugin-react");
+// const tailwindcss = require("@tailwindcss/vite");
+// const { viteStaticCopy } = require("vite-plugin-static-copy");
+
+// module.exports = defineConfig({
+//   plugins: [
+//     react(),
+//     tailwindcss(),
+//     viteStaticCopy({
+//       targets: [{ src: "public/_redirects", dest: "." }],
+//     }),
+//   ],
+//   build: {
+//     outDir: "dist",
+//   },
+//   publicDir: "public",
+//   base: "./",
+// });

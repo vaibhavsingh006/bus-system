@@ -6,7 +6,7 @@ const BookingsView = ({ recentBookings, activeTab, setActiveTab }) => {
         <div className="mb-8 rounded-lg bg-white p-6 shadow-sm">
             <div className="mb-4 flex items-center justify-between">
                 <h3 className="text-lg font-bold text-gray-800">Recent Bookings</h3>
-                {/* Show "View All" button only if this component is rendered on the main dashboard tab */}
+                {/* Show "View All" button only i,skaklsalkf this component is rendered on the main dashboard tab */}
                 {activeTab === "dashboard" && (
                     <button
                         onClick={() => setActiveTab("bookings")}

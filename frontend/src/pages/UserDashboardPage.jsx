@@ -7,79 +7,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs"
 import { CardContent, Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Calendar, MapPin, User, Mail, Phone, CreditCard, LogOut, Bus, Badge, Clock, Eye, Download } from "lucide-react";
+import { redirect, useNavigate } from "react-router-dom";
 const API_URL = import.meta.env.VITE_API_URL;
 
-// Mock data for user bookings
-const upcomingBookings = [
-  {
-    id: "BK1234",
-    busName: "Express Deluxe",
-    operator: "National Express",
-    from: "New York",
-    to: "Boston",
-    date: "2023-06-15",
-    departureTime: "08:00 AM",
-    arrivalTime: "11:30 AM",
-    seats: [5, 6],
-    status: "Confirmed",
-    price: 90,
-  },
-  {
-    id: "BK1235",
-    busName: "Luxury Liner",
-    operator: "Premium Coaches",
-    from: "Boston",
-    to: "Washington DC",
-    date: "2023-07-22",
-    departureTime: "09:15 AM",
-    arrivalTime: "02:45 PM",
-    seats: [12],
-    status: "Confirmed",
-    price: 55,
-  },
-];
-
-const pastBookings = [
-  {
-    id: "BK1230",
-    busName: "City Hopper",
-    operator: "Urban Transit",
-    from: "New York",
-    to: "Philadelphia",
-    date: "2023-05-10",
-    departureTime: "10:30 AM",
-    arrivalTime: "01:00 PM",
-    seats: [18],
-    status: "Completed",
-    price: 40,
-  },
-  {
-    id: "BK1228",
-    busName: "Night Rider",
-    operator: "Moonlight Travel",
-    from: "Chicago",
-    to: "Detroit",
-    date: "2023-04-05",
-    departureTime: "11:00 PM",
-    arrivalTime: "06:00 AM",
-    seats: [22, 23],
-    status: "Completed",
-    price: 130,
-  },
-  {
-    id: "BK1225",
-    busName: "Express Deluxe",
-    operator: "National Express",
-    from: "Boston",
-    to: "New York",
-    date: "2023-03-20",
-    departureTime: "02:00 PM",
-    arrivalTime: "05:30 PM",
-    seats: [8],
-    status: "Cancelled",
-    price: 45,
-  },
-];
 
 const UserDashboardPage = () => {
   const [activeTab, setActiveTab] = useState("upcoming");
@@ -88,7 +18,8 @@ const UserDashboardPage = () => {
   const [userData, setUserData] = useState(null);
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [status, setStatus] = useState('');
+  const [ status, setStatus ] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBusDetails = async () => {
@@ -100,9 +31,14 @@ const UserDashboardPage = () => {
           },
           credentials: "include", // optional if you're using cookies
         }); // Adjust API path if needed
-        const data = await response.json();
+        if (!response.ok) {
+          alert("Please login first");
+          navigate("/")
+        }else{
+          const data = await response.json();
         setUserData(data);
         setLoading(false);
+        }
       } catch (error) {
         console.error("Failed to fetch prfile:", error);
       }
@@ -145,23 +81,14 @@ const UserDashboardPage = () => {
     amountPaid: payment.amount,
     transactionId: payment.transactionId,
   })) || [];
-  console.log(allBookings)
 
   const today = new Date();
 
   const pending = booking?.filter(a => a.paymentStatus === 'Pending') || [];
 
-  console.log(pending, 'pending')
-  // const upcomingBookings = allBookings.filter(b => {
-  //   new Date(b.travelDate) >= today;
-  // }
-  // );
   const upcomingBookings = allBookings.filter(b => new Date(b.travelDate) >= today);
 
-  console.log(upcomingBookings, 'upcomingBookings')
-
   const pastBookings = allBookings.filter(b => new Date(b.travelDate) < today);
-  console.log(pastBookings, 'upcomingBookings')
 
 
   const handleCancelBooking = (booking) => {
@@ -170,12 +97,10 @@ const UserDashboardPage = () => {
   };
 
   const confirmCancelBooking = () => {
-    console.log("Cancelling booking:", selectedBooking.id);
     setCancelModalOpen(false);
   };
 
   const renderBookingCard = (booking) => {
-    console.log(status)
     if (!booking) return 'no buses';
     return (<Card key={booking._id} className="mb-4 overflow-hidden">
       <CardContent className="p-0">
@@ -189,18 +114,6 @@ const UserDashboardPage = () => {
                 </h3>
                 <p className="text-sm text-muted-foreground">{booking.bus.amenities.length < 3 ? booking.bus.seatType : 'Luxury '} Bus</p>
               </div>
-              {/* <Badge
-                className={
-                  status === "Confirmed"
-                    ? "bg-green-100 text-green-800 hover:bg-green-200"
-                    : status === "Completed"
-                      ? "bg-blue-100 text-blue-800 hover:bg-blue-200"
-                      : "bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
-                }
-                value={`status`}
-              >
-
-              </Badge> */}
               <div className={
                 status === "Confirmed"
                   ? "bg-green-100 text-green-800 font-semibold text-xs px-2 py-1 hover:bg-green-200"

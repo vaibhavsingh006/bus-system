@@ -152,6 +152,28 @@ const Bus = require("./models/bus");
 const User = require("./models/user");
 const Booking = require("./models/booking");
 
+const cron = require("node-cron");
+const fetch = require("node-fetch");
+
+const UPSTASH_URL = process.env.UPSTASH_REDIS_REST_URL;
+const UPSTASH_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+
+// Schedule: every 10 days at 00:00
+cron.schedule("0 0 */10 * *", async () => {
+  try {
+    const res = await fetch(`${UPSTASH_URL}/get/ping`, {
+      headers: {
+        Authorization: `Bearer ${UPSTASH_TOKEN}`,
+      },
+    });
+
+    const data = await res.text();
+    console.log("✅ Redis keep-alive ping sent:", data);
+  } catch (err) {
+    console.error("❌ Redis keep-alive ping failed:", err.message);
+  }
+});
+
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -248,14 +270,12 @@ app.use("/booking", bookingRoutes);
 app.use("/payment", paymentRoutes);
 app.use("/auto", otpRoutes);
 
-// ✅ ✅ ✅ Serve Frontend Build
 app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
 });
 
-// Start server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 module.exports = app;

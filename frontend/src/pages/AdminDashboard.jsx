@@ -156,7 +156,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Sidebar from "../components/adminComp/Sidebar";
 import TopBar from "../components/adminComp/Topbar.jsx";
 import HomePage from "../components/adminComp/Home-page.jsx";
-import UsersPage from "../components/adminComp/UserPage.jsxserPage";
+import UsersPage from "../components/adminComp/UserPage.jsx";
 import BusesPage from "../components/adminComp/Buses-page.jsx";
 import BookingsPage from "../components/adminComp/Booking-page.jsx";
 import PaymentsPage from "../components/adminComp/Payments-page.jsx";

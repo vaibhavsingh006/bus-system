@@ -159,20 +159,20 @@ const UPSTASH_URL = process.env.UPSTASH_REDIS_REST_URL;
 const UPSTASH_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
 
 // Schedule: every 10 days at 00:00
-cron.schedule("0 0 */10 * *", async () => {
-  try {
-    const res = await fetch(`${UPSTASH_URL}/get/ping`, {
-      headers: {
-        Authorization: `Bearer ${UPSTASH_TOKEN}`,
-      },
-    });
+// cron.schedule("0 0 */10 * *", async () => {
+//   try {
+//     const res = await fetch(`${UPSTASH_URL}/get/ping`, {
+//       headers: {
+//         Authorization: `Bearer ${UPSTASH_TOKEN}`,
+//       },
+//     });
 
-    const data = await res.text();
-    console.log("✅ Redis keep-alive ping sent:", data);
-  } catch (err) {
-    console.error("❌ Redis keep-alive ping failed:", err.message);
-  }
-});
+//     const data = await res.text();
+//     console.log("✅ Redis keep-alive ping sent:", data);
+//   } catch (err) {
+//     console.error("❌ Redis keep-alive ping failed:", err.message);
+//   }
+// });
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));

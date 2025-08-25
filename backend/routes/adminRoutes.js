@@ -103,7 +103,10 @@ router.post("/login", async (req, res) => {
 // Get all bookings (protected)
 router.get("/all-bookings", ownerProtect, async (req, res) => {
   try {
-    const bookings = await Booking.find();
+    const bookings = await Booking.find()
+      .populate("user", "name email") // only fetch these fields
+      .populate("bus", "name from to time price") // only fetch these fields
+      .sort({ createdAt: -1 }); // latest first
     res.json(bookings);
   } catch (err) {
     res.status(500).json({ message: "Server error" });

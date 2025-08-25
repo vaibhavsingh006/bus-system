@@ -4,11 +4,12 @@ import { motion } from "framer-motion";
 import { LogOut, Menu, Moon, Sun, Bell, Search } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { Link } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 // import { useTheme } from "next-themes";
 
@@ -83,10 +84,7 @@ export default function TopBar({ title, toggleSidebar }) {
           </Button>
 
           {/* Theme Toggle */}
-          <Button
-            variant="ghost"
-            size="icon"
-          >
+          <Button variant="ghost" size="icon">
             <Sun className="h-5 w-5 rotate-0 scale-100 transition-all text-black" />
             <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all text-black" />
             <span className="sr-only">Toggle theme</span>
@@ -95,12 +93,18 @@ export default function TopBar({ title, toggleSidebar }) {
           {/* User Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex items-center space-x-2">
+              <Link
+                to="/addbus"
+                variant="ghost"
+                className="flex items-center space-x-2"
+              >
                 <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
                   <span className="text-white text-sm font-medium">A</span>
                 </div>
-                <span className="hidden md:block text-sm font-medium">Admin</span>
-              </Button>
+                <span className="hidden md:block text-sm font-medium">
+                  Add Bus
+                </span>
+              </Link>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuItem>

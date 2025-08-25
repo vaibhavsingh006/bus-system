@@ -32,11 +32,8 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link
-                  to="/dashboard"
-                  className="text-gray-300 hover:text-white"
-                >
-                  My Bookings
+                <Link to="/admin" className="text-gray-300 hover:text-white">
+                  Admin Dashboard
                 </Link>
               </li>
               <li>

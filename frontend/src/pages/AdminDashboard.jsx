@@ -150,13 +150,11 @@
 //   )
 // }
 
-
-
 // pages/AdminDashboard.jsx
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Sidebar from "../components/adminComp/Sidebar";
-import TopBar from "../components/adminComp/TopBar";
+import TopBar from "../components/adminComp/Topbar.jsx";
 import HomePage from "../components/adminComp/home-page";
 import UsersPage from "../components/adminComp/UserPage";
 import BusesPage from "../components/adminComp/Buses-page";
@@ -171,12 +169,12 @@ export default function AdminDashboard() {
   const pageVariants = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -20 }
+    exit: { opacity: 0, y: -20 },
   };
 
   const pageTransition = {
     duration: 0.3,
-    ease: "easeInOut"
+    ease: "easeInOut",
   };
 
   const renderPage = () => {
@@ -186,7 +184,7 @@ export default function AdminDashboard() {
       buses: <BusesPage />,
       bookings: <BookingsPage />,
       payments: <PaymentsPage />,
-      passengers: <PassengersPage />
+      passengers: <PassengersPage />,
     };
 
     const selectedPage = pageMap[currentPage] || <HomePage />;
@@ -212,7 +210,7 @@ export default function AdminDashboard() {
       buses: "Buses Management",
       bookings: "Bookings Management",
       payments: "Payments Management",
-      passengers: "Passengers Management"
+      passengers: "Passengers Management",
     };
     return titles[currentPage] || "Dashboard";
   };

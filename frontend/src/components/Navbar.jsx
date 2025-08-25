@@ -193,7 +193,7 @@ const Navbar = () => {
           `px-3 py-2 rounded-md text-sm font-medium smooth-transition ${
             isActive
               ? "text-blue-700 bg-blue-50"
-              : "text-gray-700 hover:text-gray-500 hover:bg-gray-50"
+              : "text-gray-700 hover:text-gray-600 hover:bg-gray-100"
           }`
         }
       >
@@ -206,7 +206,7 @@ const Navbar = () => {
           `px-3 py-2 rounded-md text-sm font-medium ${
             isActive
               ? "text-blue-700 bg-blue-50"
-              : "text-gray-700 hover:text-gray-500 hover:bg-gray-50"
+              : "text-gray-700 hover:text-gray-600 hover:bg-gray-100"
           }`
         }
       >
@@ -222,8 +222,8 @@ const Navbar = () => {
         className={({ isActive }) =>
           `px-3 py-2 rounded-md text-sm font-medium ${
             isActive
-              ? "text-blue-600 font-semibold"
-              : "text-gray-700 hover:text-blue-600"
+              ? "text-blue-700 bg-blue-50"
+              : "text-gray-700 hover:text-gray-600 hover:bg-gray-100"
           }`
         }
       >

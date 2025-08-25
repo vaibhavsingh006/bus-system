@@ -1,15 +1,32 @@
-import React, { useEffect } from "react"
+import React, { useEffect } from "react";
 
 import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../components/ui/tabs";
 import { CardContent, Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
-import { Calendar, MapPin, User, Mail, Phone, CreditCard, LogOut, Bus, Badge, Clock, Eye, Download } from "lucide-react";
+import {
+  Calendar,
+  MapPin,
+  User,
+  Mail,
+  Phone,
+  CreditCard,
+  LogOut,
+  Bus,
+  Badge,
+  Clock,
+  Eye,
+  Download,
+} from "lucide-react";
 import { redirect, useNavigate } from "react-router-dom";
 const API_URL = import.meta.env.VITE_API_URL;
-
 
 const UserDashboardPage = () => {
   const [activeTab, setActiveTab] = useState("upcoming");
@@ -18,7 +35,7 @@ const UserDashboardPage = () => {
   const [userData, setUserData] = useState(null);
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [ status, setStatus ] = useState('');
+  const [status, setStatus] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,15 +46,15 @@ const UserDashboardPage = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          credentials: "include", // optional if you're using cookies
-        }); // Adjust API path if needed
+          credentials: "include",
+        });
         if (!response.ok) {
           alert("Please login first");
-          navigate("/")
-        }else{
+          navigate("/");
+        } else {
           const data = await response.json();
-        setUserData(data);
-        setLoading(false);
+          setUserData(data);
+          setLoading(false);
         }
       } catch (error) {
         console.error("Failed to fetch prfile:", error);
@@ -45,7 +62,6 @@ const UserDashboardPage = () => {
     };
 
     fetchBusDetails();
-
 
     const fetchBookingDetails = async () => {
       try {
@@ -67,29 +83,31 @@ const UserDashboardPage = () => {
     fetchBookingDetails();
   }, []);
 
-
   useEffect(() => {
-    if (activeTab === 'pending') setStatus('Pending');
-    else if (activeTab === 'upcoming') setStatus('Confirmed');
-    else if (activeTab === 'past') setStatus('Completed');
+    if (activeTab === "pending") setStatus("Pending");
+    else if (activeTab === "upcoming") setStatus("Confirmed");
+    else if (activeTab === "past") setStatus("Completed");
   }, [activeTab]);
 
-
-  const allBookings = userData?.confirmPayments?.map(payment => ({
-    ...payment.booking,
-    paymentId: payment._id,
-    amountPaid: payment.amount,
-    transactionId: payment.transactionId,
-  })) || [];
+  const allBookings =
+    userData?.confirmPayments?.map((payment) => ({
+      ...payment.booking,
+      paymentId: payment._id,
+      amountPaid: payment.amount,
+      transactionId: payment.transactionId,
+    })) || [];
 
   const today = new Date();
 
-  const pending = booking?.filter(a => a.paymentStatus === 'Pending') || [];
+  const pending = booking?.filter((a) => a.paymentStatus === "Pending") || [];
 
-  const upcomingBookings = allBookings.filter(b => new Date(b.travelDate) >= today);
+  const upcomingBookings = allBookings.filter(
+    (b) => new Date(b.travelDate) >= today
+  );
 
-  const pastBookings = allBookings.filter(b => new Date(b.travelDate) < today);
-
+  const pastBookings = allBookings.filter(
+    (b) => new Date(b.travelDate) < today
+  );
 
   const handleCancelBooking = (booking) => {
     setSelectedBooking(booking);
@@ -101,88 +119,120 @@ const UserDashboardPage = () => {
   };
 
   const renderBookingCard = (booking) => {
-    if (!booking) return 'no buses';
-    return (<Card key={booking._id} className="mb-4 overflow-hidden">
-      <CardContent className="p-0">
-        <div className="flex flex-col md:flex-row">
-          <div className="flex-1 p-4 md:border-r">
-            <div className="flex items-start justify-between">
+    if (!booking) return "no buses";
+    return (
+      <Card key={booking._id} className="mb-4 overflow-hidden">
+        <CardContent className="p-0">
+          <div className="flex flex-col md:flex-row">
+            <div className="flex-1 p-4 md:border-r">
+              <div className="flex items-start justify-between">
+                <div>
+                  <h3 className="font-bold text-lg flex items-center">
+                    <Bus className="mr-2 h-5 w-5 text-primary" />
+                    {booking.bus.name}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {booking.bus.amenities.length < 3
+                      ? booking.bus.seatType
+                      : "Luxury "}{" "}
+                    Bus
+                  </p>
+                </div>
+                <div
+                  className={
+                    status === "Confirmed"
+                      ? "bg-green-100 text-green-800 font-semibold text-xs px-2 py-1 hover:bg-green-200"
+                      : status === "Completed"
+                      ? "bg-blue-100 text-blue-800 hover:bg-blue-200 font-semibold text-xs px-2 py-1 rounded"
+                      : "bg-yellow-100 text-yellow-800 hover:bg-yellow-200 font-semibold text-xs px-2 py-1"
+                  }
+                >
+                  {status}
+                </div>
+              </div>
+
+              <div className="mt-4 grid grid-cols-2 gap-3">
+                <div className="flex items-center">
+                  <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
+                  <span className="text-sm">
+                    {new Date(booking.travelDate).toLocaleDateString()}
+                  </span>
+                </div>
+                <div className="flex items-center">
+                  <Clock className="h-4 w-4 mr-2 text-muted-foreground" />
+                  <span className="text-sm">
+                    {new Date(
+                      `1970-01-01T${booking.bus.time}:00`
+                    ).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: true,
+                    })}
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-3 flex items-center">
+                <MapPin className="h-4 w-4 mr-2 text-muted-foreground" />
+                <div className="flex items-center">
+                  <span className="text-sm font-medium">
+                    {booking.bus.from}
+                  </span>
+                  <span className="mx-2 text-muted-foreground">→</span>
+                  <span className="text-sm font-medium">{booking.bus.to}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-muted/30 p-4 flex flex-col justify-between md:w-64">
               <div>
-                <h3 className="font-bold text-lg flex items-center">
-                  <Bus className="mr-2 h-5 w-5 text-primary" />
-                  {booking.bus.name}
-                </h3>
-                <p className="text-sm text-muted-foreground">{booking.bus.amenities.length < 3 ? booking.bus.seatType : 'Luxury '} Bus</p>
+                <div className="flex justify-between mb-2">
+                  <span className="text-sm text-muted-foreground">
+                    Booking NO:
+                  </span>
+                  <span className="text-sm font-medium">
+                    {booking.bus.busNumber}
+                  </span>
+                </div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-sm text-muted-foreground">Seats:</span>
+                  <span className="text-sm font-medium">
+                    {booking.seatNumbers.join(", ")}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Price:</span>
+                  <span className="text-sm font-medium">
+                    ₹
+                    {activeTab === "pending"
+                      ? booking.totalPrice
+                      : booking.amountPaid}
+                  </span>
+                </div>
               </div>
-              <div className={
-                status === "Confirmed"
-                  ? "bg-green-100 text-green-800 font-semibold text-xs px-2 py-1 hover:bg-green-200"
-                  : status === "Completed"
-                    ? "bg-blue-100 text-blue-800 hover:bg-blue-200 font-semibold text-xs px-2 py-1 rounded"
-                    : "bg-yellow-100 text-yellow-800 hover:bg-yellow-200 font-semibold text-xs px-2 py-1"
-              }>{status}</div>
-            </div>
 
-            <div className="mt-4 grid grid-cols-2 gap-3">
-              <div className="flex items-center">
-                <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
-                <span className="text-sm">{new Date(booking.travelDate).toLocaleDateString()}</span>
-              </div>
-              <div className="flex items-center">
-                <Clock className="h-4 w-4 mr-2 text-muted-foreground" />
-                <span className="text-sm">{new Date(`1970-01-01T${booking.bus.time}:00`).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })}</span>
-              </div>
-            </div>
-
-            <div className="mt-3 flex items-center">
-              <MapPin className="h-4 w-4 mr-2 text-muted-foreground" />
-              <div className="flex items-center">
-                <span className="text-sm font-medium">{booking.bus.from}</span>
-                <span className="mx-2 text-muted-foreground">→</span>
-                <span className="text-sm font-medium">{booking.bus.to}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-muted/30 p-4 flex flex-col justify-between md:w-64">
-            <div>
-              <div className="flex justify-between mb-2">
-                <span className="text-sm text-muted-foreground">Booking NO:</span>
-                <span className="text-sm font-medium">{booking.bus.busNumber}</span>
-              </div>
-              <div className="flex justify-between mb-2">
-                <span className="text-sm text-muted-foreground">Seats:</span>
-                <span className="text-sm font-medium">{booking.seatNumbers.join(", ")}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Price:</span>
-                <span className="text-sm font-medium">₹{activeTab === 'pending' ? booking.totalPrice : booking.amountPaid}</span>
-              </div>
-            </div>
-
-            <div className="flex gap-2 mt-4">
-              <Button variant="outline" size="sm" className="flex-1">
-                <Eye className="h-4 w-4 mr-1" />
-                Details
-              </Button>
-              {booking.paymentStatus === "Pending" ? (
-                <Button variant="default" size="sm" className="flex-1">
-                  Pay Now
-                </Button>
-              ) : (
-
+              <div className="flex gap-2 mt-4">
                 <Button variant="outline" size="sm" className="flex-1">
-                  <Download className="h-4 w-4 mr-1" />
-                  Ticket
+                  <Eye className="h-4 w-4 mr-1" />
+                  Details
                 </Button>
-              )}
+                {booking.paymentStatus === "Pending" ? (
+                  <Button variant="default" size="sm" className="flex-1">
+                    Pay Now
+                  </Button>
+                ) : (
+                  <Button variant="outline" size="sm" className="flex-1">
+                    <Download className="h-4 w-4 mr-1" />
+                    Ticket
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>)
-  }
-
+        </CardContent>
+      </Card>
+    );
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -208,7 +258,9 @@ const UserDashboardPage = () => {
                     <User className="h-8 w-8 text-blue-600" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-gray-700">{userData?.name}</h2>
+                    <h2 className="text-xl font-bold text-gray-700">
+                      {userData?.name}
+                    </h2>
                     <p className="text-gray-600">Premium Member</p>
                   </div>
                 </div>
@@ -242,13 +294,25 @@ const UserDashboardPage = () => {
                   <div className="px-6 pt-6">
                     <h2 className="text-xl font-bold mb-4">My Bookings</h2>
                     <TabsList className="grid w-full grid-cols-2 gap-5">
-                      <TabsTrigger className="font-semibold bg-green-400 text-gray-800" value="upcoming" onClick={() => setActiveTab("upcoming")}>
+                      <TabsTrigger
+                        className="font-semibold bg-green-400 text-gray-800"
+                        value="upcoming"
+                        onClick={() => setActiveTab("upcoming")}
+                      >
                         Upcoming
                       </TabsTrigger>
-                      <TabsTrigger className="font-semibold bg-blue-400 text-gray-800" value="past" onClick={() => setActiveTab("past")}>
+                      <TabsTrigger
+                        className="font-semibold bg-blue-400 text-gray-800"
+                        value="past"
+                        onClick={() => setActiveTab("past")}
+                      >
                         Past
                       </TabsTrigger>
-                      <TabsTrigger className="font-semibold bg-yellow-400 text-gray-800" value="pending" onClick={() => setActiveTab("pending")}>
+                      <TabsTrigger
+                        className="font-semibold bg-yellow-400 text-gray-800"
+                        value="pending"
+                        onClick={() => setActiveTab("pending")}
+                      >
                         Pending
                       </TabsTrigger>
                     </TabsList>
@@ -273,7 +337,13 @@ const UserDashboardPage = () => {
                     ))}
                   </TabsContent> */}
                   <TabsContent value={activeTab} className="p-6">
-                    {(activeTab === "upcoming" ? upcomingBookings : activeTab === 'past' ? pastBookings : pending).map(renderBookingCard
+                    {(activeTab === "past"
+                      ? pastBookings
+                      : activeTab === "upcoming"
+                      ? upcomingBookings
+                      : pending
+                    ).map(
+                      renderBookingCard
                       // (booking) => (
                       //   <div key={booking._id} className="border mb-3 text-gray-700 rounded-lg overflow-hidden">
                       //     <div className="bg-blue-50 p-4 flex justify-between items-center">
@@ -299,7 +369,6 @@ const UserDashboardPage = () => {
                       // )
                     )}
                   </TabsContent>
-
                 </Tabs>
               </div>
             </div>

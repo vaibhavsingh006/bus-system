@@ -4,8 +4,13 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Clock, Calendar, ArrowRight, Filter, Star } from "lucide-react";
 const API_URL = import.meta.env.VITE_API_URL;
-import { Clock3, BusFront, Users2, CalendarDays, BadgeIndianRupee } from "lucide-react";
-
+import {
+  Clock3,
+  BusFront,
+  Users2,
+  CalendarDays,
+  BadgeIndianRupee,
+} from "lucide-react";
 
 const SearchResultsPage = () => {
   const location = useLocation();
@@ -14,8 +19,8 @@ const SearchResultsPage = () => {
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState("departureTime");
   const [filterAmenities, setFilterAmenities] = useState([]);
-  const [pDate, setPDate] = useState('');
-  const [pDay, setPDay] = useState('');
+  const [pDate, setPDate] = useState("");
+  const [pDay, setPDay] = useState("");
 
   // Get search params from location state or URL params
   const currentDate = new Date().toISOString().split("T")[0];
@@ -26,7 +31,7 @@ const SearchResultsPage = () => {
   };
 
   if (!searchParams.date) {
-    searchParams.date = currentDate
+    searchParams.date = currentDate;
   }
 
   useEffect(() => {
@@ -35,29 +40,37 @@ const SearchResultsPage = () => {
         setLoading(true);
 
         const queryParams = [];
-        if (searchParams.from) queryParams.push(`from=${encodeURIComponent(searchParams.from.trim())}`);
-        if (searchParams.to) queryParams.push(`to=${encodeURIComponent(searchParams.to.trim())}`);
-        if (searchParams.date) queryParams.push(`date=${encodeURIComponent(searchParams.date.trim())}`);
+        if (searchParams.from)
+          queryParams.push(
+            `from=${encodeURIComponent(searchParams.from.trim())}`
+          );
+        if (searchParams.to)
+          queryParams.push(`to=${encodeURIComponent(searchParams.to.trim())}`);
+        if (searchParams.date)
+          queryParams.push(
+            `date=${encodeURIComponent(searchParams.date.trim())}`
+          );
 
-        const queryString = queryParams.length > 0 ? "?" + queryParams.join("&") : "";
-
+        const queryString =
+          queryParams.length > 0 ? "?" + queryParams.join("&") : "";
 
         const response = await fetch(
-          `${API_URL}/bus/search-buses${queryString}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include", // optional if you're using cookies
-        }
+          `${API_URL}/bus/search-buses${queryString}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include", // optional if you're using cookies
+          }
         );
         // console.log(response, 'response here');
         const data = await response.json();
-        console.log(data, 'response here');
-        console.log(queryString, 'quary here');
+        console.log(data, "response here");
+        console.log(queryString, "quary here");
         setBuses(data?.buses);
-        setPDate(data?.searchedDate)
-        setPDay(data?.searchedDay)
+        setPDate(data?.searchedDate);
+        setPDay(data?.searchedDay);
       } catch (error) {
         console.error("Failed to fetch buses", error);
         setBuses([]); // Optional fallback
@@ -72,7 +85,6 @@ const SearchResultsPage = () => {
     fetchBuses();
   }, [searchParams.from, searchParams.to, searchParams.date]);
 
-
   const handleSortChange = (e) => {
     setSortBy(e.target.value);
     const sortedBuses = [...buses];
@@ -85,7 +97,9 @@ const SearchResultsPage = () => {
         sortedBuses.sort((a, b) => b.price - a.price);
         break;
       case "departureTime":
-        sortedBuses.sort((a, b) => a.departureTime.localeCompare(b.departureTime));
+        sortedBuses.sort((a, b) =>
+          a.departureTime.localeCompare(b.departureTime)
+        );
         break;
       case "duration":
         sortedBuses.sort((a, b) => a.duration.localeCompare(b.duration));
@@ -99,13 +113,17 @@ const SearchResultsPage = () => {
 
   const toggleAmenityFilter = (amenity) => {
     setFilterAmenities((prev) =>
-      prev.includes(amenity) ? prev.filter((a) => a !== amenity) : [...prev, amenity]
+      prev.includes(amenity)
+        ? prev.filter((a) => a !== amenity)
+        : [...prev, amenity]
     );
   };
 
   const filteredBuses =
     filterAmenities.length > 0
-      ? buses.filter((bus) => filterAmenities.every((amenity) => bus.amenities.includes(amenity)))
+      ? buses.filter((bus) =>
+          filterAmenities.every((amenity) => bus.amenities.includes(amenity))
+        )
       : buses;
 
   const handleSelectSeats = (busId, date) => {
@@ -114,7 +132,7 @@ const SearchResultsPage = () => {
 
   function calculateArrival(startTime = "00:00", duration = "0h 0m") {
     try {
-      const [startHour, startMinute] = startTime.split(':').map(Number);
+      const [startHour, startMinute] = startTime.split(":").map(Number);
       const [durationHour, durationMinute] = duration.match(/\d+/g).map(Number);
 
       const date = new Date();
@@ -125,7 +143,7 @@ const SearchResultsPage = () => {
 
       let hours = date.getHours();
       const minutes = date.getMinutes();
-      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const ampm = hours >= 12 ? "PM" : "AM";
       hours = hours % 12 || 12;
       const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
 
@@ -135,9 +153,6 @@ const SearchResultsPage = () => {
     }
   }
 
-
-
-
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -146,7 +161,7 @@ const SearchResultsPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-start flex-col md:flex-row justify-between sm:items-center text-white">
             <div className="mb-4 md:mb-0">
-              <h1 className=" text-[30px] sm:text-5xl font-bold">
+              <h1 className=" text-[30px] sm:text-3xl font-bold">
                 {searchParams.from} to {searchParams.to}
               </h1>
               <div className="flex items-center mt-1">
@@ -177,15 +192,26 @@ const SearchResultsPage = () => {
                 <div className="border-t pt-3">
                   <h4 className="font-medium mb-2 text-gray-600">Amenities</h4>
                   <div className="space-y-2">
-                    {["WiFi", "AC", "Charging Ports", "Entertainment", "Snacks"].map((amenity) => (
-                      <label key={amenity} className="flex font-semibold items-center">
+                    {[
+                      "WiFi",
+                      "AC",
+                      "Charging Ports",
+                      "Entertainment",
+                      "Snacks",
+                    ].map((amenity) => (
+                      <label
+                        key={amenity}
+                        className="flex font-semibold items-center"
+                      >
                         <input
                           type="checkbox"
                           className="h-4 w-4 text-blue-600 font-semibold focus:ring-blue-500 border-gray-300 rounded"
                           checked={filterAmenities.includes(amenity)}
                           onChange={() => toggleAmenityFilter(amenity)}
                         />
-                        <span className="ml-2 text-sm text-gray-700">{amenity}</span>
+                        <span className="ml-2 text-sm text-gray-700">
+                          {amenity}
+                        </span>
                       </label>
                     ))}
                   </div>
@@ -198,10 +224,16 @@ const SearchResultsPage = () => {
               <div className="bg-white p-4 rounded-lg shadow-sm mb-4">
                 <div className="flex flex-col sm:flex-row justify-between items-center">
                   <p className="text-gray-700 mb-2 sm:mb-0">
-                    <span className="font-semibold">{filteredBuses?.length}</span> buses found
+                    <span className="font-semibold">
+                      {filteredBuses?.length}
+                    </span>{" "}
+                    buses found
                   </p>
                   <div className="flex items-center">
-                    <label htmlFor="sort" className="mr-2 text-sm text-gray-700 font-semibold">
+                    <label
+                      htmlFor="sort"
+                      className="mr-2 text-sm text-gray-700 font-semibold"
+                    >
                       Sort by:
                     </label>
                     <select
@@ -223,24 +255,29 @@ const SearchResultsPage = () => {
                 <div className="flex justify-center items-center h-64">
                   <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
                 </div>
-              ) : (
-                buses.length > 0 ? (
-                  <div className="space-y-4">
-                    {filteredBuses && filteredBuses?.map((bus) => {
-                      const userSelectedDay = new Date(searchParams.date).toLocaleDateString(undefined, { weekday: "long" });
+              ) : buses.length > 0 ? (
+                <div className="space-y-4">
+                  {filteredBuses &&
+                    filteredBuses?.map((bus) => {
+                      const userSelectedDay = new Date(
+                        searchParams.date
+                      ).toLocaleDateString(undefined, { weekday: "long" });
                       const actualSearchedDay = pDay; // get this from backend response
-                      const showDayLabel = userSelectedDay !== actualSearchedDay;
+                      const showDayLabel =
+                        userSelectedDay !== actualSearchedDay;
                       return (
                         <div
                           key={bus._id}
-                          className="border border-green-200 rounded-xl p-5 shadow-sm bg-white transition hover:shadow-md"
+                          className="border border-blue-200 rounded-xl p-5 shadow-sm bg-white transition hover:shadow-md"
                         >
                           {/* Top Header */}
                           <div className="flex flex-col md:flex-row justify-between items-start gap-3">
                             <div className="flex items-center gap-3">
-                              <h2 className="text-lg font-bold text-green-600">{bus.name || "Bus Name"}</h2>
+                              <h2 className="text-lg font-bold text-blue-600">
+                                {bus.name || "Bus Name"}
+                              </h2>
                               {bus.price <= 500 && (
-                                <span className="bg-green-100 text-green-700 text-xs font-medium px-2 py-0.5 rounded-full">
+                                <span className="bg-blue-100 text-blue-700 text-xs font-medium px-2 py-0.5 rounded-full">
                                   Cheapest
                                 </span>
                               )}
@@ -261,10 +298,18 @@ const SearchResultsPage = () => {
                             <div className="text-center md:text-left">
                               <div className="text-base font-medium">
                                 {bus.time
-                                  ? new Date(`1970-01-01T${bus.time}:00`).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })
+                                  ? new Date(
+                                      `1970-01-01T${bus.time}:00`
+                                    ).toLocaleTimeString([], {
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                      hour12: true,
+                                    })
                                   : "N/A"}
                               </div>
-                              <div className="text-xs font-semibold">{bus.from || "From"}</div>
+                              <div className="text-xs font-semibold">
+                                {bus.from || "From"}
+                              </div>
                             </div>
 
                             <div className="flex items-center gap-1 text-gray-500 text-xs my-2 md:my-0">
@@ -276,7 +321,9 @@ const SearchResultsPage = () => {
                               <div className="text-base font-medium">
                                 {calculateArrival(bus.time, bus.duration)}
                               </div>
-                              <div className="text-xs font-semibold">{bus.to || "To"}</div>
+                              <div className="text-xs font-semibold">
+                                {bus.to || "To"}
+                              </div>
                             </div>
                           </div>
 
@@ -292,7 +339,11 @@ const SearchResultsPage = () => {
                             </div>
                             <div>{bus.seatType || "N/A"}</div>
                             <div>{bus.busNumber || "N/A"}</div>
-                            <div className="truncate">{(bus.amenities?.length > 0 ? bus.amenities.slice(0, 2).join(", ") + "..." : "Amenities")}</div>
+                            <div className="truncate">
+                              {bus.amenities?.length > 0
+                                ? bus.amenities.slice(0, 2).join(", ") + "..."
+                                : "Amenities"}
+                            </div>
                           </div>
 
                           {/* Footer */}
@@ -300,23 +351,30 @@ const SearchResultsPage = () => {
                             <div className="flex gap-2 items-start flex-wrap text-xs text-gray-500">
                               <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
                                 <CalendarDays className="w-3.5 h-3.5" />
-                                {bus.daysOfOperation.length === 7 ? "Daily" : bus.daysOfOperation?.join(", ") || "Daily"}
+                                {bus.daysOfOperation.length === 7
+                                  ? "Daily"
+                                  : bus.daysOfOperation?.join(", ") || "Daily"}
                               </span>
-                              <span className="bg-gray-100 px-2 py-1 rounded-full">One-way</span>
-                              <span className="bg-gray-100 px-2 py-1 rounded-full">Direct</span>
+                              <span className="bg-gray-100 px-2 py-1 rounded-full">
+                                One-way
+                              </span>
+                              <span className="bg-gray-100 px-2 py-1 rounded-full">
+                                Direct
+                              </span>
                             </div>
                             <button
                               onClick={() => handleSelectSeats(bus._id, pDate)}
-                              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full sm:w-auto"
+                              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium w-full sm:w-auto"
                             >
                               Select Seats
                             </button>
                           </div>
                         </div>
-                      )
-                    }
-                    )}
-                  </div>) : (<p>No buses found.</p>)
+                      );
+                    })}
+                </div>
+              ) : (
+                <p>No buses found.</p>
               )}
             </div>
           </div>

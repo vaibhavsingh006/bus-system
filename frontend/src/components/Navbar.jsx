@@ -91,160 +91,231 @@
 
 // export default Navbar
 
-
-
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Menu, X } from "lucide-react";
 const API_URL = import.meta.env.VITE_API_URL;
+import { NavLink } from "react-router-dom";
 
 const Navbar = () => {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        fetch(`${API_URL}/user`, {
-            method: 'GET',
-            credentials: 'include', // Include cookies in the request
-        })
-            .then((response) => {
-                if (response.status === 401 || response.status === 403) {
-                    // Redirect to login or unauthorized page if not allowed
-                    setIsLoggedIn(false); // Redirect to login page
-                } else {
-                    setIsLoggedIn(true);
-                }
-            })
-            .catch((error) => {
-                console.error('Error checking authorization:', error);
-            });
-
-    }, []);
-
-    const handleLogout = async () => {
-        try {
-            const response = await fetch(`${API_URL}/logout`, {
-                method: 'GET',
-                credentials: 'include',
-            });
-
-            if (response.ok) {
-                console.log(response);
-
-                alert('Logged out successfully');
-                // Redirect using navigate
-                navigate('/');
-                setIsLoggedIn(false);
-            } else {
-                const errorData = await response.json();
-                alert(`Error: ${errorData.message}`);
-            }
-        } catch (error) {
-            console.error('Logout failed:', error);
+  useEffect(() => {
+    fetch(`${API_URL}/user`, {
+      method: "GET",
+      credentials: "include", // Include cookies in the request
+    })
+      .then((response) => {
+        if (response.status === 401 || response.status === 403) {
+          // Redirect to login or unauthorized page if not allowed
+          setIsLoggedIn(false); // Redirect to login page
+        } else {
+          setIsLoggedIn(true);
         }
-    };
+      })
+      .catch((error) => {
+        console.error("Error checking authorization:", error);
+      });
+  }, []);
 
-    const commonLinks = (
-        <>
-            <Link
-                to="/"
-                className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600"
-            >
-                Home
-            </Link>
-            <Link
-                to="/search-results"
-                className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600"
-            >
-                Buses
-            </Link>
-        </>
-    );
+  const handleLogout = async () => {
+    try {
+      const response = await fetch(`${API_URL}/logout`, {
+        method: "GET",
+        credentials: "include",
+      });
 
-    const authLinks = isLoggedIn ? (
-        <>
-            <Link
-                to="/dashboard"
-                className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600"
-            >
-                My Bookings
+      if (response.ok) {
+        console.log(response);
+
+        alert("Logged out successfully");
+        // Redirect using navigate
+        navigate("/");
+        setIsLoggedIn(false);
+      } else {
+        const errorData = await response.json();
+        alert(`Error: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
+  // const commonLinks = (
+  //     <>
+  //         <Link
+  //             to="/"
+  //             className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600"
+  //         >
+  //             Home
+  //         </Link>
+  //         <Link
+  //             to="/search-results"
+  //             className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600"
+  //         >
+  //             Buses
+  //         </Link>
+  //     </>
+  // );
+
+  // const authLinks = isLoggedIn ? (
+  //     <>
+  //         <Link
+  //             to="/dashboard"
+  //             className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600"
+  //         >
+  //             My Bookings
+  //         </Link>
+  //         <button
+  //             onClick={handleLogout}
+  //             className="px-3 py-2 rounded-md text-sm font-medium bg-red-500 text-white hover:bg-red-600"
+  //         >
+  //             Logout
+  //         </button>
+  //     </>
+  // ) : (
+  //     <Link
+  //         to="/login"
+  //         className="px-3 py-2 rounded-md text-sm font-medium bg-blue-600 text-white hover:bg-blue-700"
+  //     >
+  //         Login
+  //     </Link>
+  // );
+
+  const commonLinks = (
+    <>
+      <NavLink
+        to="/"
+        end
+        className={({ isActive }) =>
+          `px-3 py-2 rounded-md text-sm font-medium smooth-transition ${
+            isActive
+              ? "text-blue-700 bg-blue-50"
+              : "text-gray-700 hover:text-gray-500 hover:bg-gray-50"
+          }`
+        }
+      >
+        Home
+      </NavLink>
+
+      <NavLink
+        to="/search-results"
+        className={({ isActive }) =>
+          `px-3 py-2 rounded-md text-sm font-medium ${
+            isActive
+              ? "text-blue-700 bg-blue-50"
+              : "text-gray-700 hover:text-gray-500 hover:bg-gray-50"
+          }`
+        }
+      >
+        Buses
+      </NavLink>
+    </>
+  );
+
+  const authLinks = isLoggedIn ? (
+    <>
+      <NavLink
+        to="/dashboard"
+        className={({ isActive }) =>
+          `px-3 py-2 rounded-md text-sm font-medium ${
+            isActive
+              ? "text-blue-600 font-semibold"
+              : "text-gray-700 hover:text-blue-600"
+          }`
+        }
+      >
+        My Bookings
+      </NavLink>
+      <button
+        onClick={handleLogout}
+        className="px-3 py-2 rounded-md text-sm font-medium bg-red-500 text-white hover:bg-red-600"
+      >
+        Logout
+      </button>
+    </>
+  ) : (
+    <NavLink
+      to="/login"
+      className={({ isActive }) =>
+        `px-3 py-2 rounded-md text-sm font-medium ${
+          isActive
+            ? "bg-blue-700 text-white"
+            : "bg-blue-600 text-white hover:bg-blue-700"
+        }`
+      }
+    >
+      Login
+    </NavLink>
+  );
+
+  return (
+    <nav className="bg-white shadow-md">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16">
+          <div className="flex items-center">
+            <Link to="/" className="text-xl font-bold text-blue-600">
+              BusGo
             </Link>
+          </div>
+
+          <div className="hidden md:flex items-center space-x-4">
+            {commonLinks}
+            {authLinks}
+          </div>
+
+          <div className="md:hidden flex items-center">
             <button
-                onClick={handleLogout}
-                className="px-3 py-2 rounded-md text-sm font-medium bg-red-500 text-white hover:bg-red-600"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="inline-flex text-gray-600 items-center !p-[6px_15px] justify-center font-semibold hover:text-blue-400 outline-0 border-0"
             >
-                Logout
+              {isMenuOpen ? (
+                <X className="h-7 w-7" />
+              ) : (
+                <Menu className="h-7 w-7" />
+              )}
             </button>
-        </>
-    ) : (
-        <Link
-            to="/login"
-            className="px-3 py-2 rounded-md text-sm font-medium bg-blue-600 text-white hover:bg-blue-700"
-        >
-            Login
-        </Link>
-    );
+          </div>
+        </div>
+      </div>
 
-    return (
-        <nav className="bg-white shadow-md">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between h-16">
-                    <div className="flex items-center">
-                        <Link to="/" className="text-xl font-bold text-blue-600">BusGo</Link>
-                    </div>
-
-                    <div className="hidden md:flex items-center space-x-4">
-                        {commonLinks}
-                        {authLinks}
-                    </div>
-
-                    <div className="md:hidden flex items-center">
-                        <button
-                            onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            className="inline-flex text-gray-600 items-center !p-[6px_15px] justify-center font-semibold hover:text-blue-400 outline-0 border-0"
-                        >
-                            {isMenuOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            {isMenuOpen && (
-                <div className="md:hidden px-2 pt-2 pb-3 flex flex-col space-y-1 sm:px-3">
-                    {commonLinks}
-                    {isLoggedIn ? (
-                        <>
-                            <Link
-                                to="/dashboard"
-                                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600"
-                                onClick={() => setIsMenuOpen(false)}
-                            >
-                                My Bookings
-                            </Link>
-                            <button
-                                onClick={() => {
-                                    handleLogout();
-                                    setIsMenuOpen(false);
-                                }}
-                                className="w-full text-left px-3 py-2 rounded-md text-base font-medium bg-red-500 text-white hover:bg-red-600"
-                            >
-                                Logout
-                            </button>
-                        </>
-                    ) : (
-                        <Link
-                            to="/login"
-                            className="block px-3 py-2 rounded-md text-base font-medium bg-blue-600 text-white hover:bg-blue-700"
-                            onClick={() => setIsMenuOpen(false)}
-                        >
-                            Login
-                        </Link>
-                    )}
-                </div>
-            )}
-        </nav>
-    );
+      {isMenuOpen && (
+        <div className="md:hidden px-2 pt-2 pb-3 flex flex-col space-y-1 sm:px-3">
+          {commonLinks}
+          {isLoggedIn ? (
+            <>
+              <Link
+                to="/dashboard"
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                My Bookings
+              </Link>
+              <button
+                onClick={() => {
+                  handleLogout();
+                  setIsMenuOpen(false);
+                }}
+                className="w-full text-left px-3 py-2 rounded-md text-base font-medium bg-red-500 text-white hover:bg-red-600"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link
+              to="/login"
+              className="block px-3 py-2 rounded-md text-base font-medium bg-blue-600 text-white hover:bg-blue-700"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Login
+            </Link>
+          )}
+        </div>
+      )}
+    </nav>
+  );
 };
 
 export default Navbar;

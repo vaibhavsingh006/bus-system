@@ -155,12 +155,12 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Sidebar from "../components/adminComp/Sidebar";
 import TopBar from "../components/adminComp/Topbar.jsx";
-import HomePage from "../components/adminComp/home-page";
-import UsersPage from "../components/adminComp/UserPage";
-import BusesPage from "../components/adminComp/Buses-page";
-import BookingsPage from "../components/adminComp/Booking-page";
-import PaymentsPage from "../components/adminComp/Payments-page";
-import PassengersPage from "../components/adminComp/passengers-page";
+import HomePage from "../components/adminComp/Home-page.jsx";
+import UsersPage from "../components/adminComp/UserPage.jsxserPage";
+import BusesPage from "../components/adminComp/Buses-page.jsx";
+import BookingsPage from "../components/adminComp/Booking-page.jsx";
+import PaymentsPage from "../components/adminComp/Payments-page.jsx";
+import PassengersPage from "../components/adminComp/Passengers-page.jsx";
 
 export default function AdminDashboard() {
   const [currentPage, setCurrentPage] = useState("home");

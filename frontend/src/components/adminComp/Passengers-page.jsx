@@ -1,9 +1,16 @@
-import { motion } from "framer-motion"
-import { Eye, Trash2, Plus, Search, Filter, UserCheck } from "lucide-react"
-import { Button } from "../ui/button"
-import { Input } from "../ui/input"
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
+import { motion } from "framer-motion";
+import { Eye, Trash2, Plus, Search, Filter, UserCheck } from "lucide-react";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
 
 const mockPassengers = [
   {
@@ -51,7 +58,7 @@ const mockPassengers = [
     lastTrip: "2024-03-19",
     status: "Active",
   },
-]
+];
 
 export default function PassengersPage() {
   return (
@@ -63,8 +70,12 @@ export default function PassengersPage() {
     >
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-bold text-gray-800 ">Passengers Management</h2>
-          <p className="text-gray-600 ">Manage passenger profiles and travel history</p>
+          <h2 className="text-3xl font-bold text-gray-800 ">
+            Passengers Management
+          </h2>
+          <p className="text-gray-600 ">
+            Manage passenger profiles and travel history
+          </p>
         </div>
 
         <Button className="flex items-center space-x-2">
@@ -117,7 +128,9 @@ export default function PassengersPage() {
                     transition={{ duration: 0.3, delay: index * 0.1 }}
                     className="hover:bg-gray-50 transition-colors"
                   >
-                    <TableCell className="font-medium">{passenger.id}</TableCell>
+                    <TableCell className="font-medium">
+                      {passenger.id}
+                    </TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-3">
                         <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
@@ -133,17 +146,21 @@ export default function PassengersPage() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <span className="font-medium text-blue-600">{passenger.totalTrips}</span>
+                      <span className="font-medium text-blue-600">
+                        {passenger.totalTrips}
+                      </span>
                     </TableCell>
-                    <TableCell className="text-gray-600 ">{passenger.lastTrip}</TableCell>
+                    <TableCell className="text-gray-600 ">
+                      {passenger.lastTrip}
+                    </TableCell>
                     <TableCell>
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-medium ${
                           passenger.status === "VIP"
                             ? "bg-purple-100 text-purple-800 "
                             : passenger.status === "Active"
-                              ? "bg-green-100 text-green-800 "
-                              : "bg-blue-100 text-blue-800 "
+                            ? "bg-green-100 text-green-800 "
+                            : "bg-blue-100 text-blue-800 "
                         }`}
                       >
                         {passenger.status}
@@ -154,7 +171,11 @@ export default function PassengersPage() {
                         <Button variant="ghost" size="sm">
                           <Eye className="w-4 h-4" />
                         </Button>
-                        <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-red-600 hover:text-red-700"
+                        >
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
@@ -167,5 +188,5 @@ export default function PassengersPage() {
         </CardContent>
       </Card>
     </motion.div>
-  )
+  );
 }
